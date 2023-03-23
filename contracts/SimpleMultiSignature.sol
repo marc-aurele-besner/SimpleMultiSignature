@@ -14,4 +14,16 @@ contract SimpleMultiSignature {
   function removeOwner(address userAddress) internal returns (bool) {}
 
   function changeOwner(address newOwner, address lastOwner) internal returns (bool) {}
+
+  function changeThreshold(uint256 newThreshold) internal returns (bool) {}
+
+  function reveive() external payable {}
+
+  function execTransaction(
+    address to,
+    uint256 value,
+    bytes memory data,
+    uint256 txnGas,
+    bytes memory signatures
+  ) returns (bool)
 }
