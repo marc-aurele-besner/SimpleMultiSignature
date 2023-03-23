@@ -61,6 +61,10 @@ contract SimpleMultiSignature {
     return _nonceUsed[nonce];
   }
 
+  function isNonceUsedByUser(uint256 nonce, address userAddress) public view returns (bool) {
+    return _nonceOwnerUsed[nonce][userAddress];
+  }
+
   function execTransaction(
     address to,
     uint256 value,
