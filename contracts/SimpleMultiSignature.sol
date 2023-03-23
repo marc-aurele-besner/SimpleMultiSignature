@@ -37,6 +37,7 @@ contract SimpleMultiSignature {
     require(newOwner != address(0), 'SimpleMultiSignature: New owner must not be the zero address');
     _owners[oldOwner] = false;
     _owners[newOwner] = true;
+    return true;
   }
 
   function changeThreshold(uint256 newThreshold) internal returns (bool) {}
