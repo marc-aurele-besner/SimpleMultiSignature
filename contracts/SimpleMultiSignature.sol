@@ -23,6 +23,16 @@ contract SimpleMultiSignature {
       _;
   }
 
+  // Return the name as a string
+  function name() public pure returns (string memory) {
+    return NAME;
+  }
+
+  // Return the version as a string
+  function version() public pure returns (string memory) {
+    return VERSION;
+  }
+
   function isOwner(address userAddress) public view returns (bool) {}
 
   function threshold() public view returns (uint256) {}
