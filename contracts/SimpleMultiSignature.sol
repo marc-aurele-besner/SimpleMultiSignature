@@ -31,11 +31,17 @@ contract SimpleMultiSignature {
 
   function removeOwner(address userAddress) internal returns (bool) {}
 
-  function changeOwner(address newOwner, address lastOwner) internal returns (bool) {}
+  function changeOwner(address oldOwner, address newOwner) internal returns (bool) {
+    require(_owners[oldOwner], 'SimpleMultiSignature: Old owner must be an owner');
+    require(!_owners[newOwner], 'SimpleMultiSignature: New owner must not be an owner');
+    require(newOwner != address(0), 'SimpleMultiSignature: New owner must not be the zero address');
+    _owners[oldOwner] = false;
+    _owners[newOwner] = true;
+  }
 
   function changeThreshold(uint256 newThreshold) internal returns (bool) {}
 
-  function reveive() external payable {}
+  reveive() external payable {}
 
   function execTransaction(
     address to,
