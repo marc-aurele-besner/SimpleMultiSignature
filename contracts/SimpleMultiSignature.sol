@@ -49,7 +49,10 @@ contract SimpleMultiSignature {
 
   function changeOwner(address newOwner, address lastOwner) internal returns (bool) {}
 
-  function changeThreshold(uint256 newThreshold) internal returns (bool) {}
+  function changeThreshold(uint256 newThreshold) internal returns (bool) {
+    _threshold = uint16(newThreshold);
+    return true;
+  }
 
   function reveive() external payable {}
 
