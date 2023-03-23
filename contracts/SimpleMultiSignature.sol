@@ -5,5 +5,7 @@ contract SimpleMultiSignature {
   string public constant NAME = 'SimpleMultiSignature';
   string public constant VERSION = '0.0.1';
 
-  function isOwner(address userAddress) public returns (bool) {}
+  function isOwner(address userAddress) public view returns (bool) {}
+
+  function threshold() public view returns (uint256) {}
 }
