@@ -12,8 +12,8 @@ contract SimpleMultiSignature {
   mapping(uint256 => bool) private _nonceUsed;
   mapping(uint256 => mapping(address => bool)) private _nonceOwnerUsed;
 
-  event OwnerAdded();
-  event OwnerRemoved();
+  event OwnerAdded(userAddress);
+  event OwnerRemoved(userAddress);
   event ReveiveEther();
   event TransactionExecuted();
   event TransactionFailled();
@@ -31,7 +31,7 @@ contract SimpleMultiSignature {
     return _threshold;
   }
 
-  function addOwner(address userAddress) internal returns (bool) {
+  function addOwner(address userAddress) internal isMultiSig returns (bool) {
     require(!_owners[userAddress], "SimpleMultiSignature: Address is already an owner");
     _owners[userAddress] = true;
     _ownerCount++;
@@ -39,7 +39,7 @@ contract SimpleMultiSignature {
     return true;
   }
 
-  function removeOwner(address userAddress) internal returns (bool) {
+  function removeOwner(address userAddress) internal isMultiSig returns (bool) {
     require(_owners[userAddress], "SimpleMultiSignature: Address is not an owner");
     _owners[userAddress] = false;
     _ownerCount--;
