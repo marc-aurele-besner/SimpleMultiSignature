@@ -10,4 +10,6 @@ contract SimpleMultiSignature {
   function threshold() public view returns (uint256) {}
 
   function addOwner(address userAddress) internal returns (bool) {}
+
+  function removeOwner(address userAddress) internal returns (bool) {}
 }
