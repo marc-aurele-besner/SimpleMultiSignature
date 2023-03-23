@@ -10,8 +10,8 @@ contract SimpleMultiSignature {
   mapping(uint256 => bool) private _nonceUsed;
   mapping(uint256 => mapping(address => bool)) private _nonceOwnerUsed;
 
-  event OwnerAdded();
-  event OwnerRemoved();
+  event OwnerAdded(address newOwner);
+  event OwnerRemoved(address oldOwner);
   event ReveiveEther();
   event TransactionExecuted();
   event TransactionFailled();
@@ -39,7 +39,16 @@ contract SimpleMultiSignature {
 
   function removeOwner(address userAddress) internal returns (bool) {}
 
-  function changeOwner(address newOwner, address lastOwner) internal returns (bool) {}
+  function changeOwner(address oldOwner, address newOwner) internal returns (bool) {
+    require(_owners[oldOwner], 'SimpleMultiSignature: Old owner must be an owner');
+    require(!_owners[newOwner], 'SimpleMultiSignature: New owner must not be an owner');
+    require(newOwner != address(0), 'SimpleMultiSignature: New owner must not be the zero address');
+    _owners[oldOwner] = false;
+    emit OwnerRemoved(oldOwner);
+    _owners[newOwner] = true;
+    emit OwnerAdded(newOwner);
+    return true;
+  }
 
   function changeThreshold(uint16 newThreshold) internal isMultiSig returns (bool) {
     require(newThreshold > 0);
@@ -48,7 +57,7 @@ contract SimpleMultiSignature {
     return true;
   }
 
-  function reveive() external payable {}
+  receive() external payable {}
 
   function execTransaction(
     address to,
