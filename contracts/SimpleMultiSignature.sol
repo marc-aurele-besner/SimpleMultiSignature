@@ -2,8 +2,6 @@
 pragma solidity ^0.8.19;
 
 contract SimpleMultiSignature {
-  string public constant NAME = 'SimpleMultiSignature';
-  string public constant VERSION = '0.0.1';
   
   uint16 private _threshold;
   uint16 private _ownerCount;
@@ -21,6 +19,16 @@ contract SimpleMultiSignature {
   modifer isMultiSig() {
       require(msg.sender == address(this), 'SimpleMultiSignature: Only possible via multisig request');
       _;
+  }
+
+  // Return the name as a string
+  function name() public pure returns (string memory) {
+    return 'SimpleMultiSignature';
+  }
+
+  // Return the version as a string
+  function version() public pure returns (string memory) {
+    return '0.0.1';
   }
 
   function isOwner(address userAddress) public view returns (bool) {}
