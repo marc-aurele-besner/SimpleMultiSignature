@@ -31,15 +31,35 @@ contract SimpleMultiSignature {
     return _threshold;
   }
 
-  function addOwner(address userAddress) internal returns (bool) {}
+  function addOwner(address userAddress) internal returns (bool) {
+    require(!_owners[userAddress], "SimpleMultiSignature: Address is already an owner");
+    _owners[userAddress] = true;
+    _ownerCount++;
+    emit OwnerAdded(userAddress);
+    return true;
+  }
 
-  function removeOwner(address userAddress) internal returns (bool) {}
+  function removeOwner(address userAddress) internal returns (bool) {
+    require(_owners[userAddress], "SimpleMultiSignature: Address is not an owner");
+    _owners[userAddress] = false;
+    _ownerCount--;
+    emit OwnerRemoved(userAddress);
+    return true;
+  }
 
   function changeOwner(address newOwner, address lastOwner) internal returns (bool) {}
 
   function changeThreshold(uint256 newThreshold) internal returns (bool) {}
 
   function reveive() external payable {}
+
+  function ownerCount() public view returns (uint16) {
+    return _ownerCount;
+  }
+
+  function isNonceUsed(uint256 nonce) punlic view returns (bool) {
+    return _nonceUsed[nonce];
+  }
 
   function execTransaction(
     address to,
