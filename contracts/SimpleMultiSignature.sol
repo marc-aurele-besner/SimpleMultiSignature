@@ -12,4 +12,6 @@ contract SimpleMultiSignature {
   function addOwner(address userAddress) internal returns (bool) {}
 
   function removeOwner(address userAddress) internal returns (bool) {}
+
+  function changeOwner(address newOwner, address lastOwner) internal returns (bool) {}
 }
