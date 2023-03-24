@@ -12,8 +12,8 @@ contract SimpleMultiSignature {
   mapping(uint256 => bool) private _nonceUsed;
   mapping(uint256 => mapping(address => bool)) private _nonceOwnerUsed;
 
-  event OwnerAdded(userAddress);
-  event OwnerRemoved(userAddress);
+  event OwnerAdded(address indexed owner);
+  event OwnerRemoved(address indexed owner);
   event ReveiveEther();
   event TransactionExecuted();
   event TransactionFailled();
