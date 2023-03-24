@@ -2,8 +2,6 @@
 pragma solidity ^0.8.19;
 
 contract SimpleMultiSignature {
-  string public constant NAME = 'SimpleMultiSignature';
-  string public constant VERSION = '0.0.1';
   
   uint16 private _threshold;
   uint16 private _ownerCount;
@@ -26,6 +24,17 @@ contract SimpleMultiSignature {
   function isOwner(address userAddress) public view returns (bool) {
     return _owners[userAddress];
   }
+ 
+  // Return the name as a string
+  function name() public pure returns (string memory) {
+    return 'SimpleMultiSignature';
+  }
+
+  // Return the version as a string
+  function version() public pure returns (string memory) {
+    return '0.0.1';
+  }
+
 
   function threshold() public view returns (uint256) {
     return _threshold;
@@ -47,11 +56,25 @@ contract SimpleMultiSignature {
     return true;
   }
 
-  function changeOwner(address newOwner, address lastOwner) internal returns (bool) {}
+  function changeOwner(address oldOwner, address newOwner) internal returns (bool) {
+    require(_owners[oldOwner], 'SimpleMultiSignature: Old owner must be an owner');
+    require(!_owners[newOwner], 'SimpleMultiSignature: New owner must not be an owner');
+    require(newOwner != address(0), 'SimpleMultiSignature: New owner must not be the zero address');
+    _owners[oldOwner] = false;
+    emit OwnerRemoved(oldOwner);
+    _owners[newOwner] = true;
+    emit OwnerAdded(newOwner);
+    return true;
+  }
 
-  function changeThreshold(uint256 newThreshold) internal returns (bool) {}
+  function changeThreshold(uint16 newThreshold) internal isMultiSig returns (bool) {
+    require(newThreshold > 0);
+    require(newThreshold <= _ownerCount);
+    _threshold = newThreshold;
+    return true;
+  }
 
-  function reveive() external payable {}
+  receive() external payable {}
 
   function ownerCount() public view returns (uint16) {
     return _ownerCount;
