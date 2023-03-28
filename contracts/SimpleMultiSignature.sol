@@ -75,8 +75,10 @@ contract SimpleMultiSignature is EIP712 {
       keccak256(abi.encode(keccak256('ExecuteTransaction(address to,uint256 value,bytes data,uint256 txnGas,uint256 nonce)'), to, value, data, txnGas, nonce))
     );
 
+    uint16 memory threshold = _threshold;
+
     // Verify that there is at least the amount of owner signatures to meet treshold
-    require(signatures.length >= 65 * _threshold, 'SimpleMultiSignature: Not enought owner to execute');
+    require(signatures.length >= 65 * threshold, 'SimpleMultiSignature: Not enought owner to execute');
 
     for (uint16 i; i < _threshold; ) {
       uint8 v;
