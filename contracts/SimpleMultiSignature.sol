@@ -7,6 +7,8 @@ contract SimpleMultiSignature is EIP712 {
   uint16 private _threshold;
   uint16 private _ownerCount;
 
+  bytes32 private constant _EXECUTE_TRANSACTION_TYPEHASH = keccak256('ExecuteTransaction(address to,uint256 value,bytes data,uint256 txnGas,uint256 nonce)');
+
   mapping(address => bool) private _owners;
   mapping(uint256 => bool) private _nonceUsed;
   mapping(uint256 => mapping(address => bool)) private _nonceOwnerUsed;
@@ -71,26 +73,15 @@ contract SimpleMultiSignature is EIP712 {
     // Verify that nonce has not been used
     require(!_nonceUsed[nonce], 'SimpleMultiSignature: Nonce already used');
 
-    bytes32 hash = _hashTypedDataV4(
-      keccak256(abi.encode(keccak256('ExecuteTransaction(address to,uint256 value,bytes data,uint256 txnGas,uint256 nonce)'), to, value, data, txnGas, nonce))
-    );
+    bytes32 hash = _generateHash(to, value, data, txnGas, nonce);
 
-    uint16 memory threshold = _threshold;
+    uint16 threshold_ = _threshold;
 
     // Verify that there is at least the amount of owner signatures to meet treshold
-    require(signatures.length >= 65 * threshold, 'SimpleMultiSignature: Not enought owner to execute');
+    require(signatures.length >= 65 * threshold_, 'SimpleMultiSignature: Not enought owner to execute');
 
-    for (uint16 i; i < _threshold; ) {
-      uint8 v;
-      bytes32 r;
-      bytes32 s;
-      assembly {
-        let signature := mul(0x41, i)
-        r := mload(add(signatures, add(signature, 32)))
-        s := mload(add(signatures, add(signature, 64)))
-        v := and(mload(add(signatures, add(signature, 65))), 255)
-      }
-      address owner = ecrecover(hash, v, r, s);
+    for (uint16 i; i < threshold_; ) {
+      address owner = _getOwnerFromSignature(hash, signatures, i);
 
       // Verify if owner already sign this specific transaction
       require(!_nonceOwnerUsed[nonce][owner], 'SimpleMultiSignature: Owner already sign this tx');
@@ -120,7 +111,41 @@ contract SimpleMultiSignature is EIP712 {
     }
   }
 
-  function isSignaturesValid(address to, uint256 value, bytes memory data, uint256 txnGas, bytes memory signatures) external view {}
+  function isSignaturesValid(
+    address to,
+    uint256 value,
+    bytes memory data,
+    uint256 txnGas,
+    uint256 nonce,
+    bytes memory signatures
+  ) external view returns (bool) {
+    // Verify that nonce has not been used
+    require(!_nonceUsed[nonce], 'SimpleMultiSignature: Nonce already used');
+
+    bytes32 hash = _generateHash(to, value, data, txnGas, nonce);
+
+    uint16 threshold_ = _threshold;
+
+    // Verify that there is at least the amount of owner signatures to meet treshold
+    require(signatures.length >= 65 * threshold_, 'SimpleMultiSignature: Not enought owner to execute');
+
+    for (uint16 i; i < threshold_; ) {
+      address owner = _getOwnerFromSignature(hash, signatures, i);
+
+      // Verify if owner already sign this specific transaction
+      require(!_nonceOwnerUsed[nonce][owner], 'SimpleMultiSignature: Owner already sign this tx');
+
+      require(isOwner(owner), 'SimpleMultiSignature: Signature is not valide');
+      unchecked {
+        ++i;
+      }
+    }
+    return true;
+  }
+
+  function _generateHash(address to, uint256 value, bytes memory data, uint256 txnGas, uint256 nonce) private view returns (bytes32) {
+    return _hashTypedDataV4(keccak256(abi.encode(_EXECUTE_TRANSACTION_TYPEHASH, to, value, data, txnGas, nonce)));
+  }
 
   function _executeCall(address to, uint256 value, bytes memory data, uint256 txnGas) private returns (bool success) {
     assembly {
@@ -133,6 +158,36 @@ contract SimpleMultiSignature is EIP712 {
         0, // Output location in storage
         0 // Outputs lenght
       )
+    }
+  }
+
+  function _getOwnerFromSignature(bytes32 hash, bytes memory signatures, uint256 index) private pure returns (address owner) {
+    uint8 v;
+    bytes32 r;
+    bytes32 s;
+    assembly {
+      let signature := mul(0x41, index)
+      r := mload(add(signatures, add(signature, 32)))
+      s := mload(add(signatures, add(signature, 64)))
+      v := and(mload(add(signatures, add(signature, 65))), 255)
+    }
+    owner = ecrecover(hash, v, r, s);
+  }
+
+  function multipleRequests(
+    address[] memory tos,
+    uint256[] memory values,
+    bytes[] memory datas,
+    uint256[] memory txnGas,
+    bool stopIfFail
+  ) public isMultiSig returns (bool success) {
+    uint256 length = tos.length;
+    for (uint256 i; i < length; ) {
+      success = _executeCall(tos[i], values[i], datas[i], txnGas[i]);
+      if (stopIfFail && !success) revert('SimpleMultiSignature: One of the multicall request has fail');
+      unchecked {
+        ++i;
+      }
     }
   }
 
