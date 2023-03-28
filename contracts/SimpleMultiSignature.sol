@@ -7,6 +7,8 @@ contract SimpleMultiSignature is EIP712 {
   uint16 private _threshold;
   uint16 private _ownerCount;
 
+  bytes32 private constant _EXECUTE_TRANSACTION_TYPEHASH = keccak256('ExecuteTransaction(address to,uint256 value,bytes data,uint256 txnGas,uint256 nonce)');
+
   mapping(address => bool) private _owners;
   mapping(uint256 => bool) private _nonceUsed;
   mapping(uint256 => mapping(address => bool)) private _nonceOwnerUsed;
@@ -71,9 +73,7 @@ contract SimpleMultiSignature is EIP712 {
     // Verify that nonce has not been used
     require(!_nonceUsed[nonce], 'SimpleMultiSignature: Nonce already used');
 
-    bytes32 hash = _hashTypedDataV4(
-      keccak256(abi.encode(keccak256('ExecuteTransaction(address to,uint256 value,bytes data,uint256 txnGas,uint256 nonce)'), to, value, data, txnGas, nonce))
-    );
+    bytes32 hash = _generateHash(to, value, data, txnGas, nonce);
 
     uint16 threshold_ = _threshold;
 
@@ -120,7 +120,11 @@ contract SimpleMultiSignature is EIP712 {
     }
   }
 
-  function isSignaturesValid(address to, uint256 value, bytes memory data, uint256 txnGas, bytes memory signatures) external view {}
+  function isSignaturesValid(address to, uint256 value, bytes memory data, uint256 txnGas, bytes memory signatures) external view returns (bool) {}
+
+  function _generateHash(address to, uint256 value, bytes memory data, uint256 txnGas, uint256 nonce) private view returns (bytes32) {
+    return _hashTypedDataV4(keccak256(abi.encode(_EXECUTE_TRANSACTION_TYPEHASH, to, value, data, txnGas, nonce)));
+  }
 
   function _executeCall(address to, uint256 value, bytes memory data, uint256 txnGas) private returns (bool success) {
     assembly {
