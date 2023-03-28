@@ -4,7 +4,6 @@ pragma solidity ^0.8.19;
 import '@openzeppelin/contracts/utils/cryptography/EIP712.sol';
 
 contract SimpleMultiSignature is EIP712 {
-  
   uint16 private _threshold;
   uint16 private _ownerCount;
 
@@ -15,24 +14,12 @@ contract SimpleMultiSignature is EIP712 {
   event OwnerAdded(address indexed owner);
   event OwnerRemoved(address indexed owner);
   event ReveiveEther();
-  event TransactionExecuted(
-    address indexed to,
-    bytes indexed data,
-    uint256 value,
-    uint256 txnGas,
-    uint256 gasConsumed
-  );
-  event TransactionFailled(
-    address indexed to,
-    bytes indexed data,
-    uint256 value,
-    uint256 txnGas,
-    uint256 gasConsumed
-  );
+  event TransactionExecuted(address indexed to, bytes indexed data, uint256 value, uint256 txnGas, uint256 gasConsumed);
+  event TransactionFailled(address indexed to, bytes indexed data, uint256 value, uint256 txnGas, uint256 gasConsumed);
 
   modifier isMultiSig() {
-      require(msg.sender == address(this), 'SimpleMultiSignature: Only possible via multisig request');
-      _;
+    require(msg.sender == address(this), 'SimpleMultiSignature: Only possible via multisig request');
+    _;
   }
 
   constructor(address[] memory owners_, uint16 threshold_) EIP712(name(), version()) {
@@ -42,7 +29,7 @@ contract SimpleMultiSignature is EIP712 {
     _ownerCount = uint16(owners_.length);
     _changeThreshold(threshold_);
   }
- 
+
   // Return the name as a string
   function name() public pure returns (string memory) {
     return 'SimpleMultiSignature';
@@ -52,7 +39,6 @@ contract SimpleMultiSignature is EIP712 {
   function version() public pure returns (string memory) {
     return '0.0.1';
   }
-
 
   function threshold() public view returns (uint256) {
     return _threshold;
@@ -86,22 +72,13 @@ contract SimpleMultiSignature is EIP712 {
     require(!_nonceUsed[nonce], 'SimpleMultiSignature: Nonce already used');
 
     bytes32 hash = _hashTypedDataV4(
-      keccak256(
-        abi.encode(
-          keccak256('ExecuteTransaction(address to,uint256 value,bytes data,uint256 txnGas,uint256 nonce)'),
-          to,
-          value,
-          data,
-          txnGas,
-          nonce
-        )
-      )
+      keccak256(abi.encode(keccak256('ExecuteTransaction(address to,uint256 value,bytes data,uint256 txnGas,uint256 nonce)'), to, value, data, txnGas, nonce))
     );
 
     // Verify that there is at least the amount of owner signatures to meet treshold
     require(signatures.length >= 65 * _threshold, 'SimpleMultiSignature: Not enought owner to execute');
 
-    for (uint16 i; i < _threshold; i++) {
+    for (uint16 i; i < _threshold; ) {
       uint8 v;
       bytes32 r;
       bytes32 s;
@@ -119,11 +96,13 @@ contract SimpleMultiSignature is EIP712 {
       _nonceOwnerUsed[nonce][owner] = true;
 
       require(isOwner(owner), 'SimpleMultiSignature: Signature is not valide');
+      unchecked {
+        ++i;
+      }
     }
 
     // Assign to storage that nonce has been use for this transaction
     _nonceUsed[nonce] = true;
-
 
     uint256 gas = gasleft();
     // Execute the transaction after all verification
@@ -139,22 +118,9 @@ contract SimpleMultiSignature is EIP712 {
     }
   }
 
-  function isSignaturesValid(
-    address to,
-    uint256 value,
-    bytes memory data,
-    uint256 txnGas,
-    bytes memory signatures
-    ) external view {
+  function isSignaturesValid(address to, uint256 value, bytes memory data, uint256 txnGas, bytes memory signatures) external view {}
 
-    }
-
-  function _executeCall(
-    address to,
-    uint256 value,
-    bytes memory data,
-    uint256 txnGas
-  ) private returns (bool success) {
+  function _executeCall(address to, uint256 value, bytes memory data, uint256 txnGas) private returns (bool success) {
     assembly {
       success := call(
         txnGas, // Gas for the transaction
@@ -169,7 +135,7 @@ contract SimpleMultiSignature is EIP712 {
   }
 
   function _addOwner(address userAddress) internal returns (bool) {
-    require(!_owners[userAddress], "SimpleMultiSignature: Address is already an owner");
+    require(!_owners[userAddress], 'SimpleMultiSignature: Address is already an owner');
 
     _owners[userAddress] = true;
     _ownerCount++;
@@ -183,7 +149,7 @@ contract SimpleMultiSignature is EIP712 {
   }
 
   function removeOwner(address userAddress) public isMultiSig returns (bool) {
-    require(_owners[userAddress], "SimpleMultiSignature: Address is not an owner");
+    require(_owners[userAddress], 'SimpleMultiSignature: Address is not an owner');
     _owners[userAddress] = false;
     _ownerCount--;
     emit OwnerRemoved(userAddress);
