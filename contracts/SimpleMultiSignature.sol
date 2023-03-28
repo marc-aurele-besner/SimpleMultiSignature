@@ -123,8 +123,6 @@ contract SimpleMultiSignature is EIP712 {
       require(isOwner(owner), 'SimpleMultiSignature: Signature is not valide');
     }
 
-    _threshold = threshold;
-
     // Assign to storage that nonce has been use for this transaction
     _nonceUsed[nonce] = true;
 
