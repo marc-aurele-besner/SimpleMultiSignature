@@ -174,6 +174,23 @@ contract SimpleMultiSignature is EIP712 {
     owner = ecrecover(hash, v, r, s);
   }
 
+  function multipleRequests(
+    address[] memory tos,
+    uint256[] memory values,
+    bytes[] memory datas,
+    uint256[] memory txnGas,
+    bool stopIfFail
+  ) public isMultiSig returns (bool success) {
+    uint256 length = tos.length;
+    for (uint256 i; i < length; ) {
+      success = _executeCall(tos[i], values[i], datas[i], txnGas[i]);
+      if (stopIfFail && !success) revert('SimpleMultiSignature: One of the multicall request has fail');
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
   function _addOwner(address userAddress) internal returns (bool) {
     require(!_owners[userAddress], 'SimpleMultiSignature: Address is already an owner');
 
