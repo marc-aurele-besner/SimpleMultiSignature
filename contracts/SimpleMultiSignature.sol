@@ -81,16 +81,7 @@ contract SimpleMultiSignature is EIP712 {
     require(signatures.length >= 65 * threshold_, 'SimpleMultiSignature: Not enought owner to execute');
 
     for (uint16 i; i < threshold_; ) {
-      uint8 v;
-      bytes32 r;
-      bytes32 s;
-      assembly {
-        let signature := mul(0x41, i)
-        r := mload(add(signatures, add(signature, 32)))
-        s := mload(add(signatures, add(signature, 64)))
-        v := and(mload(add(signatures, add(signature, 65))), 255)
-      }
-      address owner = ecrecover(hash, v, r, s);
+      address owner = _getOwnerFromSignature(hash, signatures, i);
 
       // Verify if owner already sign this specific transaction
       require(!_nonceOwnerUsed[nonce][owner], 'SimpleMultiSignature: Owner already sign this tx');
@@ -120,7 +111,37 @@ contract SimpleMultiSignature is EIP712 {
     }
   }
 
-  function isSignaturesValid(address to, uint256 value, bytes memory data, uint256 txnGas, bytes memory signatures) external view returns (bool) {}
+  function isSignaturesValid(
+    address to,
+    uint256 value,
+    bytes memory data,
+    uint256 txnGas,
+    uint256 nonce,
+    bytes memory signatures
+  ) external view returns (bool) {
+    // Verify that nonce has not been used
+    require(!_nonceUsed[nonce], 'SimpleMultiSignature: Nonce already used');
+
+    bytes32 hash = _generateHash(to, value, data, txnGas, nonce);
+
+    uint16 threshold_ = _threshold;
+
+    // Verify that there is at least the amount of owner signatures to meet treshold
+    require(signatures.length >= 65 * threshold_, 'SimpleMultiSignature: Not enought owner to execute');
+
+    for (uint16 i; i < threshold_; ) {
+      address owner = _getOwnerFromSignature(hash, signatures, i);
+
+      // Verify if owner already sign this specific transaction
+      require(!_nonceOwnerUsed[nonce][owner], 'SimpleMultiSignature: Owner already sign this tx');
+
+      require(isOwner(owner), 'SimpleMultiSignature: Signature is not valide');
+      unchecked {
+        ++i;
+      }
+    }
+    return true;
+  }
 
   function _generateHash(address to, uint256 value, bytes memory data, uint256 txnGas, uint256 nonce) private view returns (bytes32) {
     return _hashTypedDataV4(keccak256(abi.encode(_EXECUTE_TRANSACTION_TYPEHASH, to, value, data, txnGas, nonce)));
@@ -138,6 +159,19 @@ contract SimpleMultiSignature is EIP712 {
         0 // Outputs lenght
       )
     }
+  }
+
+  function _getOwnerFromSignature(bytes32 hash, bytes memory signatures, uint256 index) private pure returns (address owner) {
+    uint8 v;
+    bytes32 r;
+    bytes32 s;
+    assembly {
+      let signature := mul(0x41, index)
+      r := mload(add(signatures, add(signature, 32)))
+      s := mload(add(signatures, add(signature, 64)))
+      v := and(mload(add(signatures, add(signature, 65))), 255)
+    }
+    owner = ecrecover(hash, v, r, s);
   }
 
   function _addOwner(address userAddress) internal returns (bool) {
