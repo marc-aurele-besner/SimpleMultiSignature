@@ -98,10 +98,12 @@ contract SimpleMultiSignature is EIP712 {
       )
     );
 
-    // Verify that there is at least the amount of owner signatures to meet treshold
-    require(signatures.length >= 65 * _threshold, 'SimpleMultiSignature: Not enought owner to execute');
+    uint16 memory threshold = _threshold;
 
-    for (uint16 i; i < _threshold; i++) {
+    // Verify that there is at least the amount of owner signatures to meet treshold
+    require(signatures.length >= 65 * threshold, 'SimpleMultiSignature: Not enought owner to execute');
+
+    for (uint16 i; i < threshold; i++) {
       uint8 v;
       bytes32 r;
       bytes32 s;
@@ -120,6 +122,8 @@ contract SimpleMultiSignature is EIP712 {
 
       require(isOwner(owner), 'SimpleMultiSignature: Signature is not valide');
     }
+
+    _threshold = threshold;
 
     // Assign to storage that nonce has been use for this transaction
     _nonceUsed[nonce] = true;
