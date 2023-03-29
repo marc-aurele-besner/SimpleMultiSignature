@@ -1,12 +1,12 @@
 const { network } = require('hardhat');
 
-const constants = require('../../constants');
+// const constants = require('../../constants');
 
 const signTransaction = async (contractAddress, sourceWallet, to, value, data, txnGas, nonce) => {
-  var signature = await sourceWallet._signTypedData(
+  const signature = await sourceWallet._signTypedData(
     {
-      name: constants.CONTRACT_NAME,
-      version: constants.CONTRACT_VERSION,
+      name: 'SimpleMultiSignature',
+      version: '0.0.1',
       chainId: network.config.chainId,
       verifyingContract: contractAddress
     },
@@ -42,7 +42,7 @@ const signTransaction = async (contractAddress, sourceWallet, to, value, data, t
       nonce
     }
   );
-  return ethers.utils.splitSignature(signature);
+  return signature;
 };
 
 module.exports = {

@@ -144,7 +144,7 @@ contract SimpleMultiSignature is EIP712 {
   }
 
   function _generateHash(address to, uint256 value, bytes memory data, uint256 txnGas, uint256 nonce) private view returns (bytes32) {
-    return _hashTypedDataV4(keccak256(abi.encode(_EXECUTE_TRANSACTION_TYPEHASH, to, value, data, txnGas, nonce)));
+    return _hashTypedDataV4(keccak256(abi.encode(_EXECUTE_TRANSACTION_TYPEHASH, to, value, keccak256(data), txnGas, nonce))); //, to, value, data, txnGas, nonce
   }
 
   function _executeCall(address to, uint256 value, bytes memory data, uint256 txnGas) private returns (bool success) {
