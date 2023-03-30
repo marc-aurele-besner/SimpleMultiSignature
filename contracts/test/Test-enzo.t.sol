@@ -6,7 +6,7 @@ import '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol';
 import { Helper } from './shared/helper.t.sol';
 import { Errors } from './shared/errors.t.sol';
 
-contract SimpleNftMarketplace_test is Helper {
+contract SimpleMultiSignature_test is Helper {
   uint8 LOG_LEVEL = 0;
 
   function setUp() public {

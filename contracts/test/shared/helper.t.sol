@@ -19,10 +19,6 @@ contract Helper is Functions, Cheats {
     _LOG_LEVEL = newLogLevel_;
   }
 
-  function help_changeDefaultMintValue(uint256 newDefaultMintValue_) internal {
-    DEFAULT_MINT_VALUE = newDefaultMintValue_;
-  }
-
   function help_changeDefaultBlocksCount(uint256 newDefaultBlocksCount_) internal {
     DEFAULT_BLOCKS_COUNT = newDefaultBlocksCount_;
   }

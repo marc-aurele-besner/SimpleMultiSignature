@@ -45,7 +45,7 @@ contract Errors is DSTest {
   }
 
   // Expect a revert error if the revert type is not success.
-  function verify_revertCall(RevertStatus revertType_) public {
-    if (revertType_ != RevertStatus.Success && revertType_ != RevertStatus.SkipValidation) vm.expectRevert(bytes(_verify_revertCall(revertType_)));
-  }
+  // function verify_revertCall(RevertStatus revertType_) public {
+  //   if (revertType_ != RevertStatus.Success && revertType_ != RevertStatus.SkipValidation) vm.expectRevert(bytes(_verify_revertCall(revertType_)));
+  // }
 }
