@@ -4,7 +4,7 @@ require('hardhat-awesome-cli');
 require('transaction-retry-tool');
 require('@openzeppelin/hardhat-upgrades');
 
-const { RPC_MAINNET, RPC_GOERLI, PRIVATE_KEY, PRIVATE_KEY_GOERLI, ETHERSCAN_API_KEY, POLYSCAN_API_KEY, BLOCKSCOUT_API_KEY } = process.env;
+const { RPC_MAINNET, RPC_GOERLI, PRIVATE_KEY_MAINNET, PRIVATE_KEY_GOERLI, ETHERSCAN_API_KEY, POLYSCAN_API_KEY, BLOCKSCOUT_API_KEY } = process.env;
 let { DUMMY_PRIVATE_KEY } = process.env;
 
 // if (!DUMMY_PRIVATE_KEY) throw new Error('Please set your DUMMY_PRIVATE_KEY in a .env.development file');

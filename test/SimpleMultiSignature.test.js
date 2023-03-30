@@ -37,22 +37,23 @@ describe('SimpleMultiSignature', function () {
     it('Deploy contract and try to send 1 ethers from multisig (without the funds)', async function () {
       const { simpleMultiSignature, owner1, owner2, owner3, owner4, owner5, notOwner1, notOwner2, notOwner3, notOwner4, notOwner5 } = await deployContract();
 
-      expect(await owner5.getBalance()).to.be.equal(ethers.utils.parseEther('10000'));
+      const owner5Balance = await owner5.getBalance();
 
       await helper.execTransaction(simpleMultiSignature, owner2, [owner1, owner2, owner3], owner5.address, ethers.utils.parseEther('1'));
 
-      expect(await owner5.getBalance()).to.be.equal(ethers.utils.parseEther('10000'));
+      expect(await owner5.getBalance()).to.be.equal(owner5Balance);
     });
 
     it('Deploy contract and try to send 1 ethers from multisig (after funding the multisig)', async function () {
       const { simpleMultiSignature, owner1, owner2, owner3, owner4, owner5, notOwner1, notOwner2, notOwner3, notOwner4, notOwner5 } = await deployContract();
 
+      const owner5Balance = await owner5.getBalance();
+
       await owner1.sendTransaction({ to: simpleMultiSignature.address, value: ethers.utils.parseEther('1') });
-      expect(await owner5.getBalance()).to.be.equal(ethers.utils.parseEther('10000'));
 
       await helper.execTransaction(simpleMultiSignature, owner2, [owner1, owner2, owner3], owner5.address, ethers.utils.parseEther('1'));
 
-      expect(await owner5.getBalance()).to.be.equal(ethers.utils.parseEther('10001'));
+      expect(await owner5.getBalance()).to.be.equal(owner5Balance.add(ethers.utils.parseEther('1')));
     });
 
     it('Deploy contract and try to add 1 new owner', async function () {
@@ -63,6 +64,77 @@ describe('SimpleMultiSignature', function () {
       await helper.addOwner(simpleMultiSignature, owner2, [owner1, owner2, owner3], notOwner1.address);
 
       expect(await simpleMultiSignature.isOwner(notOwner1.address)).to.be.true;
+    });
+
+    it('Deploy contract and try to add 3 new owners', async function () {
+      const { simpleMultiSignature, owner1, owner2, owner3, owner4, owner5, notOwner1, notOwner2, notOwner3, notOwner4, notOwner5 } = await deployContract();
+
+      expect(await simpleMultiSignature.isOwner(notOwner1.address)).to.be.false;
+      expect(await simpleMultiSignature.isOwner(notOwner2.address)).to.be.false;
+      expect(await simpleMultiSignature.isOwner(notOwner3.address)).to.be.false;
+
+      const tos = [simpleMultiSignature.address, simpleMultiSignature.address, simpleMultiSignature.address];
+      const values = [0, 0, 0];
+      const datas = [
+        simpleMultiSignature.interface.encodeFunctionData('addOwner(address)', [notOwner1.address]),
+        simpleMultiSignature.interface.encodeFunctionData('addOwner(address)', [notOwner2.address]),
+        simpleMultiSignature.interface.encodeFunctionData('addOwner(address)', [notOwner3.address])
+      ];
+      const txnGass = [35000, 35000, 35000];
+
+      const receipt = await helper.multipleRequests(simpleMultiSignature, owner3, [owner1, owner2, owner3], tos, values, datas, txnGass);
+
+      expect(await simpleMultiSignature.isOwner(notOwner1.address)).to.be.true;
+      expect(await simpleMultiSignature.isOwner(notOwner2.address)).to.be.true;
+      expect(await simpleMultiSignature.isOwner(notOwner3.address)).to.be.true;
+    });
+
+    it('Deploy contract and try to add 3 new owners (1 of them is already an owner (multiple request set to fail if 1 tx fail))', async function () {
+      const { simpleMultiSignature, owner1, owner2, owner3, owner4, owner5, notOwner1, notOwner2, notOwner3, notOwner4, notOwner5 } = await deployContract();
+
+      expect(await simpleMultiSignature.isOwner(notOwner1.address)).to.be.false;
+      expect(await simpleMultiSignature.isOwner(notOwner2.address)).to.be.false;
+      expect(await simpleMultiSignature.isOwner(notOwner3.address)).to.be.false;
+
+      const tos = [simpleMultiSignature.address, simpleMultiSignature.address, simpleMultiSignature.address];
+      const values = [0, 0, 0];
+      const datas = [
+        simpleMultiSignature.interface.encodeFunctionData('addOwner(address)', [notOwner1.address]),
+        simpleMultiSignature.interface.encodeFunctionData('addOwner(address)', [owner1.address]),
+        simpleMultiSignature.interface.encodeFunctionData('addOwner(address)', [notOwner3.address])
+      ];
+      const txnGass = [35000, 35000, 35000];
+
+      await helper.multipleRequests(simpleMultiSignature, owner3, [owner1, owner2, owner3], tos, values, datas, txnGass);
+
+      expect(await simpleMultiSignature.isOwner(notOwner1.address)).to.be.false;
+      expect(await simpleMultiSignature.isOwner(notOwner2.address)).to.be.false;
+      expect(await simpleMultiSignature.isOwner(notOwner3.address)).to.be.false;
+    });
+
+    it('Deploy contract and try to add 3 new owners (1 of them is already an owner (multiple request set to not fail if 1 tx fail))', async function () {
+      const { simpleMultiSignature, owner1, owner2, owner3, owner4, owner5, notOwner1, notOwner2, notOwner3, notOwner4, notOwner5 } = await deployContract();
+
+      expect(await simpleMultiSignature.isOwner(notOwner1.address)).to.be.false;
+      expect(await simpleMultiSignature.isOwner(notOwner2.address)).to.be.false;
+      expect(await simpleMultiSignature.isOwner(notOwner3.address)).to.be.false;
+
+      const tos = [simpleMultiSignature.address, simpleMultiSignature.address, simpleMultiSignature.address];
+      const values = [0, 0, 0];
+      const datas = [
+        simpleMultiSignature.interface.encodeFunctionData('addOwner(address)', [notOwner1.address]),
+        simpleMultiSignature.interface.encodeFunctionData('addOwner(address)', [owner1.address]),
+        simpleMultiSignature.interface.encodeFunctionData('addOwner(address)', [notOwner3.address])
+      ];
+      const txnGass = [35000, 35000, 35000];
+
+      const receipt = await helper.multipleRequests(simpleMultiSignature, owner3, [owner1, owner2, owner3], tos, values, datas, txnGass, false);
+
+      expect(receipt.status).to.be.equal(1);
+      expect(await simpleMultiSignature.isOwner(notOwner1.address)).to.be.true;
+      expect(await simpleMultiSignature.isOwner(owner1.address)).to.be.true;
+      expect(await simpleMultiSignature.isOwner(notOwner2.address)).to.be.false;
+      expect(await simpleMultiSignature.isOwner(notOwner3.address)).to.be.true;
     });
   });
 });

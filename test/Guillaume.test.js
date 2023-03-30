@@ -57,12 +57,12 @@ describe('Guillaume-test', function () {
 
     it('Change an owner and check if the owners have been updated', async function () {
       const { simpleMultiSignature, owner1, owner2, owner3, owner4, owner5, notOwner1, notOwner2, notOwner3, notOwner4, notOwner5 } = await deployContract();
-  
+
       expect(await simpleMultiSignature.isOwner(owner5.address)).to.be.true;
       expect(await simpleMultiSignature.isOwner(notOwner1.address)).to.be.false;
-  
+
       await helper.changeOwner(simpleMultiSignature, owner2, [owner1, owner2, owner3], owner5.address, notOwner1.address);
-  
+
       expect(await simpleMultiSignature.isOwner(owner5.address)).to.be.false;
       expect(await simpleMultiSignature.isOwner(notOwner1.address)).to.be.true;
     });
@@ -77,7 +77,7 @@ describe('Guillaume-test', function () {
       expect(await simpleMultiSignature.isOwner(notOwner1.address)).to.be.true;
     });
 
-    it("Deploy contract and attempt to remove an owner", async function () {
+    it('Deploy contract and attempt to remove an owner', async function () {
       const { simpleMultiSignature, owner1, owner2, owner3, owner4, owner5, notOwner1, notOwner2, notOwner3, notOwner4, notOwner5 } = await deployContract();
 
       expect(await simpleMultiSignature.isOwner(owner5.address)).to.be.true;
@@ -87,3 +87,4 @@ describe('Guillaume-test', function () {
       expect(await simpleMultiSignature.isOwner(owner5.address)).to.be.false;
     });
   });
+});
