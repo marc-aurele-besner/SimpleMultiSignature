@@ -15,9 +15,9 @@ contract Errors is DSTest {
     SkipValidation,
     OnlyPossibleMultisigReq,
     NonceAlreadyUsed,
-    NotEnoughtOwner,
+    NotEnoughOwner,
     OwnerAlreadySign,
-    SignatureNotValide,
+    SignatureNotValid,
     MulticallFail,
     AddressAlreadyOwner,
     AddressNotOwner,
@@ -30,9 +30,9 @@ contract Errors is DSTest {
   constructor() {
     _errors[RevertStatus.OnlyPossibleMultisigReq] = 'SimpleMultiSignature: Only possible via multisig request';
     _errors[RevertStatus.NonceAlreadyUsed] = 'SimpleMultiSignature: Nonce already used';
-    _errors[RevertStatus.NotEnoughtOwner] = 'SimpleMultiSignature: Not enought owner to execute';
+    _errors[RevertStatus.NotEnoughOwner] = 'SimpleMultiSignature: Not enough owner to execute';
     _errors[RevertStatus.OwnerAlreadySign] = 'SimpleMultiSignature: Owner already sign this tx';
-    _errors[RevertStatus.SignatureNotValide] = 'SimpleMultiSignature: Signature is not valide';
+    _errors[RevertStatus.SignatureNotValid] = 'SimpleMultiSignature: Signature is not valid';
     _errors[RevertStatus.MulticallFail] = 'SimpleMultiSignature: One of the multicall request has fail';
     _errors[RevertStatus.AddressAlreadyOwner] = 'SimpleMultiSignature: Address is already an owner';
     _errors[RevertStatus.AddressNotOwner] = 'SimpleMultiSignature: Address is not an owner';
