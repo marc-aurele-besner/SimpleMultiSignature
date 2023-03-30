@@ -32,6 +32,9 @@ const addOwner = async (contract, sender, owners, newOwnerAddress, txnGas = 3500
 const changeOwner = async (contract, sender, owners, oldOwner, newOwner, txnGas = 35000, nonce = 0, error) => {
   const data = contract.interface.encodeFunctionData('changeOwner(address,address)', [oldOwner, newOwner]);
 
+const removeOwner = async (contract, sender, owners, ownerAddressToRemove, txnGas = 35000, nonce = 0, error) => {
+  const data = contract.interface.encodeFunctionData('removeOwner(address)', [ownerAddressToRemove]);
+
   const receipt = await execTransaction(contract, sender, owners, contract.address, undefined, data, txnGas, nonce, error);
   return receipt;
 };
@@ -40,5 +43,6 @@ module.exports = {
   generateSignatures,
   execTransaction,
   addOwner,
-  changeOwner
+  changeOwner,
+  removeOwner
 };
