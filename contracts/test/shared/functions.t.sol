@@ -7,7 +7,6 @@ import { Signatures } from 'foundry-test-utility/contracts/shared/signatures.sol
 import { Constants } from './constants.t.sol';
 import { Errors } from './errors.t.sol';
 import { TestStorage } from './testStorage.t.sol';
-import { SimpleMultiSignature } from '../../SimpleMultiSignature.sol';
 
 contract Functions is Constants, Errors, TestStorage, Signatures {
   enum TestType {

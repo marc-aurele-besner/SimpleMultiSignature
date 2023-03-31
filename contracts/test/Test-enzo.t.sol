@@ -5,10 +5,9 @@ import 'foundry-test-utility/contracts/utils/console.sol';
 import '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol';
 import { CheatCodes } from 'foundry-test-utility/contracts/utils/cheatcodes.sol';
 import { Helper } from './shared/helper.t.sol';
-import { Errors } from './shared/errors.t.sol';
-import { SimpleMultiSignature } from '../../contracts/SimpleMultiSignature.sol';
+import { SimpleMultiSignature } from '../SimpleMultiSignature.sol';
 
-contract SimpleMultiSignature_test is Helper, CheatCodes {
+contract Test_Enzo_SimpleMultiSignature is Helper, CheatCodes {
   SimpleMultiSignature public multiSignature;
   uint8 LOG_LEVEL = 0;
   address public owner1;
