@@ -61,4 +61,19 @@ contract Test_Enzo_SimpleMultiSignature is Helper {
     assertTrue(!multiSignature.isOwner(notOwner1));
     assertTrue(!multiSignature.isOwner(notOwner2));
   }
+
+  function test_deploy_send_ether_without_funds() public {
+    address[] memory owners = new address[](5);
+    owners[0] = owner1;
+    owners[1] = owner2;
+    owners[2] = owner3;
+    owners[3] = owner4;
+    owners[4] = owner5;
+
+    vm.startPrank(owner1);
+    multiSignature = new SimpleMultiSignature(owners, 3);
+
+    uint256 balanceOwner3 = owner3.balance();
+    multiSignature.execTransaction(owner3, 1 ether, )
+
 }
