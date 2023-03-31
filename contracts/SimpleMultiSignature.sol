@@ -13,6 +13,8 @@ contract SimpleMultiSignature is EIP712 {
   mapping(uint256 => bool) private _nonceUsed;
   mapping(uint256 => mapping(address => bool)) private _nonceOwnerUsed;
 
+  bool private _paused;
+
   event OwnerAdded(address indexed owner);
   event OwnerRemoved(address indexed owner);
   event ReveiveEther();
@@ -33,6 +35,7 @@ contract SimpleMultiSignature is EIP712 {
     }
     _ownerCount = uint16(owners_.length);
     _changeThreshold(threshold_);
+    _paused = false
   }
 
   // Return the name as a string
