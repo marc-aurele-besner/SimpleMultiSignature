@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import 'foundry-test-utility/contracts/utils/console.sol';
 import '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol';
-import { CheatCodes } from 'foundry-test-utility/contracts/utils/cheatcodes.sol';
 import { Helper } from './shared/helper.t.sol';
 import { SimpleMultiSignature } from '../SimpleMultiSignature.sol';
 
-contract Test_Enzo_SimpleMultiSignature is Helper, CheatCodes {
+contract Test_Enzo_SimpleMultiSignature is Helper {
   SimpleMultiSignature public multiSignature;
   uint8 LOG_LEVEL = 0;
   address public owner1;
@@ -22,9 +20,8 @@ contract Test_Enzo_SimpleMultiSignature is Helper, CheatCodes {
   address public notOwner4;
   address public notOwner5;
 
-  function setUp(uint8 LOG_LEVEL_) public {
+  function setUp() public {
     // Set general test settings
-    _LOG_LEVEL = LOG_LEVEL_;
     vm.roll(1);
     vm.warp(100);
 
@@ -33,7 +30,6 @@ contract Test_Enzo_SimpleMultiSignature is Helper, CheatCodes {
     owner3 = vm.addr(3);
     owner4 = vm.addr(4);
     owner5 = vm.addr(5);
-
     notOwner1 = vm.addr(6);
     notOwner2 = vm.addr(7);
     notOwner3 = vm.addr(8);
@@ -45,17 +41,24 @@ contract Test_Enzo_SimpleMultiSignature is Helper, CheatCodes {
   }
 
   function test_owner_and_threshold_set() public {
+    address[] memory owners = new address[](5);
+    owners[0] = owner1;
+    owners[1] = owner2;
+    owners[2] = owner3;
+    owners[3] = owner4;
+    owners[4] = owner5;
+
     vm.prank(owner1);
-    multiSignature = new SimpleMultiSignature([owner1, owner2, owner3, owner4, owner5], 3);
+    multiSignature = new SimpleMultiSignature(owners, 3);
 
     assertEq(multiSignature.threshold(), 3);
-    assertTrue(owner1);
-    assertTrue(owner2);
-    assertTrue(owner3);
-    assertTrue(owner4);
-    assertTrue(owner5);
+    assertTrue(multiSignature.isOwner(owner1), 'Owner1 is not owner');
+    assertTrue(multiSignature.isOwner(owner2), 'Owner2 is not owner');
+    assertTrue(multiSignature.isOwner(owner3), 'Owner3 is not owner');
+    assertTrue(multiSignature.isOwner(owner4), 'Owner4 is not owner');
+    assertTrue(multiSignature.isOwner(owner5), 'Owner5 is not owner');
 
-    assertTrue(!notOwner1);
-    assertTrue(!notOwner2);
+    assertTrue(!multiSignature.isOwner(notOwner1));
+    assertTrue(!multiSignature.isOwner(notOwner2));
   }
 }
