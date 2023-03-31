@@ -42,7 +42,7 @@ contract SimpleMultiSignature is EIP712 {
     return '0.0.1';
   }
 
-  function threshold() public view returns (uint256) {
+  function threshold() public view returns (uint16) {
     return _threshold;
   }
 
