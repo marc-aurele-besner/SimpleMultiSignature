@@ -28,23 +28,24 @@ contract Test_Enzo_SimpleMultiSignature is Helper, CheatCodes {
     vm.roll(1);
     vm.warp(100);
 
-    owner1 = addr(1);
-    owner2 = addr(2);
-    owner3 = addr(3);
-    owner4 = addr(4);
-    owner5 = addr(5);
+    owner1 = vm.addr(1);
+    owner2 = vm.addr(2);
+    owner3 = vm.addr(3);
+    owner4 = vm.addr(4);
+    owner5 = vm.addr(5);
 
-    notOwner1 = addr(6);
-    notOwner2 = addr(7);
-    notOwner3 = addr(8);
-    notOwner4 = addr(9);
-    notOwner5 = addr(10);
+    notOwner1 = vm.addr(6);
+    notOwner2 = vm.addr(7);
+    notOwner3 = vm.addr(8);
+    notOwner4 = vm.addr(9);
+    notOwner5 = vm.addr(10);
 
     vm.roll(block.number + 1);
     vm.warp(block.timestamp + 100);
   }
 
   function test_owner_and_threshold_set() public {
+    vm.prank(owner1);
     multiSignature = new SimpleMultiSignature([owner1, owner2, owner3, owner4, owner5], 3);
 
     assertEq(multiSignature.threshold(), 3);
