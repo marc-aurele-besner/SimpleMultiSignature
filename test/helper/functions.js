@@ -60,11 +60,19 @@ const multipleRequests = async (contract, sender, owners, tos, values = [0], dat
   return receipt;
 };
 
+const setNonceAsUsed = async (contract, sender, owners, nonce = 0, error) => {
+  const data = '0x'; // Aucune donnée n'est nécessaire pour marquer le nonce comme utilisé
+
+  const receipt = await execTransaction(contract, sender, owners, contract.address, undefined, data, 35000, nonce, error);
+  return receipt;
+};
+
 module.exports = {
   generateSignatures,
   execTransaction,
   addOwner,
   changeOwner,
   removeOwner,
-  multipleRequests
+  multipleRequests,
+  setNonceAsUsed
 };
