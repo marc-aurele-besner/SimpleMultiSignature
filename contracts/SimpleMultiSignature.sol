@@ -13,11 +13,16 @@ contract SimpleMultiSignature is EIP712 {
   mapping(uint256 => bool) private _nonceUsed;
   mapping(uint256 => mapping(address => bool)) private _nonceOwnerUsed;
 
+  bool private _paused;
+
   event OwnerAdded(address indexed owner);
   event OwnerRemoved(address indexed owner);
   event ReveiveEther();
   event TransactionExecuted(address indexed to, bytes indexed data, uint256 value, uint256 txnGas, uint256 gasConsumed);
   event TransactionFailled(address indexed to, bytes indexed data, uint256 value, uint256 txnGas, uint256 gasConsumed);
+  event TransactionCancelled(uint256 nonce);
+  event ContractPaused();
+  event ContractUnpaused();
 
   modifier isMultiSig() {
     require(msg.sender == address(this), 'SimpleMultiSignature: Only possible via multisig request');
@@ -30,6 +35,7 @@ contract SimpleMultiSignature is EIP712 {
     }
     _ownerCount = uint16(owners_.length);
     _changeThreshold(threshold_);
+    _paused = false
   }
 
   // Return the name as a string
@@ -70,6 +76,9 @@ contract SimpleMultiSignature is EIP712 {
     uint256 nonce,
     bytes memory signatures
   ) external returns (bool success) {
+    // Check that the contract is not paused
+    require(!_paused, "SimpleMultiSignature: Contract is paused");
+
     // Verify that nonce has not been used
     require(!_nonceUsed[nonce], 'SimpleMultiSignature: Nonce already used');
 
@@ -237,6 +246,23 @@ contract SimpleMultiSignature is EIP712 {
 
   function changeThreshold(uint16 newThreshold) public isMultiSig returns (bool) {
     return _changeThreshold(newThreshold);
+  }
+
+  function cancelTransaction(uint256 nonce) external isMultiSig {
+    require(!_paused, "SimpleMultiSignature: Contract is paused");
+    require(_nonceUsed[nonce] == false, "SimpleMultiSignature: Nonce already used");
+    _nonceUsed[nonce] = true;
+    emit TransactionCancelled(nonce);
+  }
+
+  function pauseContract() external isMultiSig {
+    _paused = true;
+    emit ContractPaused();
+  }
+
+  function unpauseContract() external isMultiSig {
+    _paused = false;
+    emit ContractUnpaused();
   }
 
   receive() external payable {}

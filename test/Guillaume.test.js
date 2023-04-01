@@ -96,6 +96,17 @@ describe('Guillaume-test', function () {
       await helper.setNonceAsUsed(simpleMultiSignature, owner2, [owner1, owner2, owner3], nonce);
     
       expect(await simpleMultiSignature.isNonceUsed(nonce)).to.be.true;
+
+    it("Should change the threshold value", async function () {
+      const { simpleMultiSignature, owner1, owner2, owner3, owner4, owner5, notOwner1, notOwner2, notOwner3, notOwner4, notOwner5 } = await deployContract();
+    
+      const newThreshold = 4;
+      const nonce = 0;
+    
+      await helper.changeThreshold(simpleMultiSignature, owner2, [owner1, owner2, owner3], newThreshold, nonce);
+    
+      const updatedThreshold = await simpleMultiSignature.threshold();
+      expect(updatedThreshold).to.equal(newThreshold);
     });
   });
 });
