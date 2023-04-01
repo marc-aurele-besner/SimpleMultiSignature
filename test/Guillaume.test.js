@@ -86,5 +86,17 @@ describe('Guillaume-test', function () {
 
       expect(await simpleMultiSignature.isOwner(owner5.address)).to.be.false;
     });
+
+    it("Should change the threshold value", async function () {
+      const { simpleMultiSignature, owner1, owner2, owner3, owner4, owner5, notOwner1, notOwner2, notOwner3, notOwner4, notOwner5 } = await deployContract();
+    
+      const newThreshold = 4;
+      const nonce = 0;
+    
+      await helper.changeThreshold(simpleMultiSignature, owner2, [owner1, owner2, owner3], newThreshold, nonce);
+    
+      const updatedThreshold = await simpleMultiSignature.threshold();
+      expect(updatedThreshold).to.equal(newThreshold);
+    });
   });
 });
