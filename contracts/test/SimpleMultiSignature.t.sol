@@ -4,10 +4,8 @@ pragma solidity ^0.8.19;
 import '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol';
 import { Helper } from './shared/helper.t.sol';
 import { Errors } from './shared/errors.t.sol';
-import { SimpleMultiSignature } from '../SimpleMultiSignature.sol';
 
 contract SimpleMultiSignature_test is Helper {
-  SimpleMultiSignature public multiSignature;
   uint8 LOG_LEVEL = 0;
   address public owner1;
   address public owner2;

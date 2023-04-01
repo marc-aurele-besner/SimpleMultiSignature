@@ -3,10 +3,8 @@ pragma solidity ^0.8.19;
 
 import '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol';
 import { Helper } from './shared/helper.t.sol';
-import { SimpleMultiSignature } from '../SimpleMultiSignature.sol';
 
 contract Test_Enzo_SimpleMultiSignature is Helper {
-  SimpleMultiSignature public multiSignature;
   uint8 LOG_LEVEL = 0;
   address public owner1;
   address public owner2;
@@ -48,8 +46,7 @@ contract Test_Enzo_SimpleMultiSignature is Helper {
     owners[3] = owner4;
     owners[4] = owner5;
 
-    vm.prank(owner1);
-    multiSignature = new SimpleMultiSignature(owners, 3);
+    createMultiSig(owner1, owners, 3);
 
     assertEq(multiSignature.threshold(), 3);
     assertTrue(multiSignature.isOwner(owner1), 'Owner1 is not owner');
@@ -62,18 +59,18 @@ contract Test_Enzo_SimpleMultiSignature is Helper {
     assertTrue(!multiSignature.isOwner(notOwner2));
   }
 
-  function test_deploy_send_ether_without_funds() public {
-    address[] memory owners = new address[](5);
-    owners[0] = owner1;
-    owners[1] = owner2;
-    owners[2] = owner3;
-    owners[3] = owner4;
-    owners[4] = owner5;
+  // function test_deploy_send_ether_without_funds() public {
+  //   address[] memory owners = new address[](5);
+  //   owners[0] = owner1;
+  //   owners[1] = owner2;
+  //   owners[2] = owner3;
+  //   owners[3] = owner4;
+  //   owners[4] = owner5;
 
-    vm.startPrank(owner1);
-    multiSignature = new SimpleMultiSignature(owners, 3);
+  //   vm.startPrank(owner1);
+  //   multiSignature = new SimpleMultiSignature(owners, 3);
 
-    uint256 balanceOwner3 = owner3.balance();
-    multiSignature.execTransaction(owner3, 1 ether, )
-
+  //   uint256 balanceOwner3 = owner3.balance();
+  //   multiSignature.execTransaction(owner3, 1 ether, )
+  // }
 }
