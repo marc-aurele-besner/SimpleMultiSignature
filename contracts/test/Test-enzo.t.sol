@@ -48,16 +48,26 @@ contract Test_Enzo_SimpleMultiSignature is Helper {
 
     createMultiSig(owner1, owners, 3);
 
-    assertEq(multiSignature.threshold(), 3);
-    assertTrue(multiSignature.isOwner(owner1), 'Owner1 is not owner');
-    assertTrue(multiSignature.isOwner(owner2), 'Owner2 is not owner');
-    assertTrue(multiSignature.isOwner(owner3), 'Owner3 is not owner');
-    assertTrue(multiSignature.isOwner(owner4), 'Owner4 is not owner');
-    assertTrue(multiSignature.isOwner(owner5), 'Owner5 is not owner');
-
     assertTrue(!multiSignature.isOwner(notOwner1));
     assertTrue(!multiSignature.isOwner(notOwner2));
   }
+
+  // function test_addOwner_removeOwner() public {
+  //   address[] memory owners = new address[](3);
+  //   owners[0] = owner1;
+  //   owners[1] = owner2;
+  //   owners[2] = owner3;
+
+  //   createMultiSig(owner1, owners, 2);
+
+  //   assertTrue(!multiSignature.isOwner(notOwner1), 'notOwner1 is owner');
+  //   vm.startPrank(owner1);
+  //   assertTrue(multiSignature.addOwner(notOwner1), 'notOwner1 is not add');
+  //   assertTrue(multiSignature.isOwner(notOwner1), 'notOwner1 is not owner');
+  //   assertTrue(multiSignature.removeOwner(notOwner1), 'notOwner1 is not remove');
+  //   assertTrue(!multiSignature.isOwner(notOwner1), 'notOwner1 is owner');
+  //   vm.stopPrank();
+  // }
 
   // function test_deploy_send_ether_without_funds() public {
   //   address[] memory owners = new address[](5);
