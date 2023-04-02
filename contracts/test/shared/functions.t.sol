@@ -73,7 +73,7 @@ contract Functions is Constants, Errors, TestStorage, Signatures {
   }
 
   function removeOwner(address sender_, address noMoreOwner) internal {
-    addOwner(sender_, noMoreOwner, Errors.RevertStatus.Success);
+    removeOwner(sender_, noMoreOwner, Errors.RevertStatus.Success);
   }
 
   function changeOwner(address sender_, address oldOwner, address newOwner, Errors.RevertStatus revertType_) internal {
