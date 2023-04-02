@@ -52,7 +52,7 @@ contract Test_Enzo_SimpleMultiSignature is Helper {
     assertTrue(!multiSignature.isOwner(notOwner2));
   }
 
-  function test_addOwner_removeOwner() public {
+  function test_addOwner_removeOwner_changeOwner() public {
     address[] memory owners = new address[](3);
     owners[0] = owner1;
     owners[1] = owner2;
@@ -63,6 +63,29 @@ contract Test_Enzo_SimpleMultiSignature is Helper {
     addOwner(address(multiSignature), notOwner1);
 
     removeOwner(address(multiSignature), notOwner1);
+
+    changeOwner(address(multiSignature), owner2, notOwner2);
+  }
+
+  function test_same_with_errors() public {
+    address[] memory owners = new address[](3);
+    owners[0] = owner1;
+    owners[1] = owner2;
+    owners[2] = owner3;
+
+    createMultiSig(owner1, owners, 2);
+
+    addOwner(owner1, notOwner1, RevertStatus.OnlyPossibleMultisigReq);
+
+    addOwner(address(multiSignature), owner1, RevertStatus.AddressAlreadyOwner);
+
+    removeOwner(address(multiSignature), notOwner1, RevertStatus.AddressNotOwner);
+
+    changeOwner(address(multiSignature), owner2, address(0), RevertStatus.NewOwnerMustNotBeZeroAddress);
+
+    changeOwner(address(multiSignature), owner2, owner1, RevertStatus.NewOwnerMustNotBeOwner);
+
+    changeOwner(address(multiSignature), notOwner2, notOwner3, RevertStatus.OldOwnerMustBeOwner);
   }
 
   // function test_deploy_send_ether_without_funds() public {
