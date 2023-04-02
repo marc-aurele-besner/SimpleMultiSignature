@@ -43,4 +43,53 @@ contract Functions is Constants, Errors, TestStorage, Signatures {
   function createMultiSig(address sender_, address[] memory owners_, uint16 threshold_) internal {
     createMultiSig(sender_, owners_, threshold_, Errors.RevertStatus.Success);
   }
+
+  function addOwner(address sender_, address newOwner, Errors.RevertStatus revertType_) internal {
+    uint16 ownerCount = multiSignature.ownerCount();
+    vm.prank(sender_);
+    verify_revertCall(revertType_);
+    multiSignature.addOwner(newOwner);
+
+    if (revertType_ == Errors.RevertStatus.Success) {
+      assertTrue(multiSignature.isOwner(newOwner));
+      assertEq(multiSignature.ownerCount(), ownerCount + 1);
+    }
+  }
+
+  function addOwner(address sender_, address newOwner) internal {
+    addOwner(sender_, newOwner, Errors.RevertStatus.Success);
+  }
+
+  function removeOwner(address sender_, address noMoreOwner, Errors.RevertStatus revertType_) internal {
+    uint16 ownerCount = multiSignature.ownerCount();
+    vm.prank(sender_);
+    verify_revertCall(revertType_);
+    multiSignature.removeOwner(noMoreOwner);
+
+    if (revertType_ == Errors.RevertStatus.Success) {
+      assertTrue(!multiSignature.isOwner(noMoreOwner));
+      assertEq(multiSignature.ownerCount(), ownerCount - 1);
+    }
+  }
+
+  function removeOwner(address sender_, address noMoreOwner) internal {
+    addOwner(sender_, noMoreOwner, Errors.RevertStatus.Success);
+  }
+
+  function changeOwner(address sender_, address oldOwner, address newOwner, Errors.RevertStatus revertType_) internal {
+    uint16 ownerCount = multiSignature.ownerCount();
+    vm.prank(sender_);
+    verify_revertCall(revertType_);
+    multiSignature.changeOwner(oldOwner, newOwner);
+
+    if (revertType_ == Errors.RevertStatus.Success) {
+      assertTrue(multiSignature.isOwner(newOwner));
+      assertTrue(!multiSignature.isOwner(oldOwner));
+      assertEq(multiSignature.ownerCount(), ownerCount);
+    }
+  }
+
+  function changeOwner(address sender_, address oldOwner, address newOwner) internal {
+    changeOwner(sender_, oldOwner, newOwner, Errors.RevertStatus.Success);
+  }
 }
