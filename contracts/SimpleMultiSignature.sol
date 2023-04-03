@@ -265,5 +265,9 @@ contract SimpleMultiSignature is EIP712 {
     emit ContractUnpaused();
   }
 
+  function isPaused() external view returns (bool) {
+    return _paused;
+  }
+
   receive() external payable {}
 }
