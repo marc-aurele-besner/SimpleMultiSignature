@@ -200,4 +200,18 @@ contract Functions is Constants, Errors, TestStorage, Signatures {
   function changeOwner(address sender_, address oldOwner, address newOwner) internal {
     changeOwner(sender_, oldOwner, newOwner, Errors.RevertStatus.Success);
   }
+
+  function changeThreshold(address sender_, uint16 newThreshold, Errors.RevertStatus revertType_) internal {
+    vm.prank(sender_);
+    verify_revertCall(revertType_);
+    multiSignature.changeThreshold(newThreshold);
+
+    if (revertType_ == Errors.RevertStatus.Success) {
+      assertEq(multiSignature.threshold(), newThreshold);
+    }
+  }
+
+  function changeThreshold(address sender_, uint16 newThreshold) internal {
+    changeThreshold(sender_, newThreshold, Errors.RevertStatus.Success);
+  }
 }

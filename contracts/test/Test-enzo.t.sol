@@ -88,6 +88,27 @@ contract Test_Enzo_SimpleMultiSignature is Helper {
     changeOwner(address(multiSignature), notOwner2, notOwner3, RevertStatus.OldOwnerMustBeOwner);
   }
 
+  function test_changeThreshold_and_pause_unpause_contract() public {
+    address[] memory owners = new address[](3);
+    owners[0] = owner1;
+    owners[1] = owner2;
+    owners[2] = owner3;
+
+    createMultiSig(owner1, owners, 2);
+
+    changeThreshold(address(multiSignature), 3);
+
+    vm.prank(address(multiSignature));
+    multiSignature.pauseContract();
+
+    assertTrue(multiSignature.isPaused());
+
+    vm.prank(address(multiSignature));
+    multiSignature.unpauseContract();
+
+    assertTrue(!multiSignature.isPaused());
+  }
+
   // function test_deploy_send_ether_without_funds() public {
   //   address[] memory owners = new address[](5);
   //   owners[0] = owner1;
