@@ -19,9 +19,8 @@ contract SimpleMultiSignature_test is Helper {
   address public notOwner4;
   address public notOwner5;
 
-  function setUp(uint8 LOG_LEVEL_) public {
+  function setUp() public {
     // Set general test settings
-    _LOG_LEVEL = LOG_LEVEL_;
     vm.roll(1);
     vm.warp(100);
 
@@ -30,7 +29,6 @@ contract SimpleMultiSignature_test is Helper {
     owner3 = vm.addr(3);
     owner4 = vm.addr(4);
     owner5 = vm.addr(5);
-
     notOwner1 = vm.addr(6);
     notOwner2 = vm.addr(7);
     notOwner3 = vm.addr(8);
@@ -39,5 +37,34 @@ contract SimpleMultiSignature_test is Helper {
 
     vm.roll(block.number + 1);
     vm.warp(block.timestamp + 100);
+  }
+
+  function test_basic_tx_without_funds() public {
+    address[] memory owners = new address[](3);
+    uint256[] memory ownersPk = new uint256[](3);
+    owners[0] = owner1;
+    owners[1] = owner2;
+    owners[2] = owner3;
+    createMultiSig(owner1, owners, 2);
+    ownersPk[0] = 1;
+    ownersPk[1] = 2;
+    ownersPk[2] = 3;
+    generateSignatures_and_execTransaction(owner1, ownersPk, owner2, 1 ether, '', 35000, 0, Errors.RevertStatus.Success, false);
+  }
+
+  function test_basic_tx_with_funds() public {
+    address[] memory owners = new address[](3);
+    uint256[] memory ownersPk = new uint256[](3);
+    owners[0] = owner1;
+    owners[1] = owner2;
+    owners[2] = owner3;
+    createMultiSig(owner1, owners, 2);
+    ownersPk[0] = 1;
+    ownersPk[1] = 2;
+    ownersPk[2] = 3;
+
+    vm.deal(address(multiSignature), 1 ether);
+
+    generateSignatures_and_execTransaction(owner1, ownersPk, owner2, 1 ether, '', 35000, 0, Errors.RevertStatus.Success, true);
   }
 }
