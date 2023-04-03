@@ -35,7 +35,7 @@ contract SimpleMultiSignature is EIP712 {
     }
     _ownerCount = uint16(owners_.length);
     _changeThreshold(threshold_);
-    _paused = false
+    _paused = false;
   }
 
   // Return the name as a string
@@ -48,7 +48,7 @@ contract SimpleMultiSignature is EIP712 {
     return '0.0.1';
   }
 
-  function threshold() public view returns (uint256) {
+  function threshold() public view returns (uint16) {
     return _threshold;
   }
 
@@ -77,7 +77,7 @@ contract SimpleMultiSignature is EIP712 {
     bytes memory signatures
   ) external returns (bool success) {
     // Check that the contract is not paused
-    require(!_paused, "SimpleMultiSignature: Contract is paused");
+    require(!_paused, 'SimpleMultiSignature: Contract is paused');
 
     // Verify that nonce has not been used
     require(!_nonceUsed[nonce], 'SimpleMultiSignature: Nonce already used');
@@ -249,8 +249,8 @@ contract SimpleMultiSignature is EIP712 {
   }
 
   function cancelTransaction(uint256 nonce) external isMultiSig {
-    require(!_paused, "SimpleMultiSignature: Contract is paused");
-    require(_nonceUsed[nonce] == false, "SimpleMultiSignature: Nonce already used");
+    require(!_paused, 'SimpleMultiSignature: Contract is paused');
+    require(_nonceUsed[nonce] == false, 'SimpleMultiSignature: Nonce already used');
     _nonceUsed[nonce] = true;
     emit TransactionCancelled(nonce);
   }

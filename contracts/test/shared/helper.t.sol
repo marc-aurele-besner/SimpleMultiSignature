@@ -7,14 +7,6 @@ import { stdCheats as Cheats } from 'foundry-test-utility/contracts/utils/stdlib
 import { Functions } from './functions.t.sol';
 
 contract Helper is Functions, Cheats {
-  function initialize_helper(uint8 LOG_LEVEL_) internal {
-    // Deploy contracts
-    initialize_tests(
-      // Test Settings
-      LOG_LEVEL_
-    );
-  }
-
   function help_changeLogLevel(uint8 newLogLevel_) internal {
     _LOG_LEVEL = newLogLevel_;
   }
