@@ -147,6 +147,42 @@ contract Functions is Constants, Errors, TestStorage, Signatures {
     generateSignatures_and_execTransaction(sender_, ownersPk, to, value, data, txnGas, nonce, Errors.RevertStatus.Success, trasactionSuccess);
   }
 
+  function buildData_addOwner(address newOwner) internal returns (bytes memory data) {
+    data = abi.encodePacked(bytes4(keccak256('addOwner(address)')), abi.encodePacked(bytes32(uint256(uint160(newOwner)))));
+  }
+
+  function buildData_changeThreshold(uint16 newThreshold) internal returns (bytes memory data) {
+    data = abi.encodePacked(bytes4(keccak256('changeThreshold(uint16)')), abi.encodePacked(bytes32(uint256(newThreshold))));
+  }
+
+  function buildData_multipleRequests(
+    address[] memory tos,
+    uint256[] memory values,
+    bytes[] memory datas,
+    uint256[] memory txnGas,
+    bool stopIfFails
+  ) internal returns (bytes memory data) {
+    bytes memory builTos;
+    bytes memory builValues;
+    bytes memory builDatas;
+    bytes memory builTxnGas;
+
+    for (uint256 i; i < tos.length; i++) {
+      builTos = abi.encode(builTos, abi.encodePacked(bytes32(uint256(uint160(tos[i])))));
+      builValues = abi.encode(builValues, abi.encodePacked(bytes32(values[i])));
+      builDatas = abi.encode(builValues, datas[i]);
+      builTxnGas = abi.encode(builTxnGas, abi.encodePacked(bytes32(txnGas[i])));
+    }
+
+    data = abi.encodePacked(
+      bytes4(keccak256('multipleRequests(address[],uint256[],bytes[],uint256[],bool)')),
+      abi.encodePacked(builTos, builValues, builDatas, builTxnGas, bytes32(uint256(0)))
+    );
+
+    // console.log('data');
+    // console.logBytes(data);
+  }
+
   function addOwner(address sender_, address newOwner, Errors.RevertStatus revertType_) internal {
     uint16 ownerCount = multiSignature.ownerCount();
 
