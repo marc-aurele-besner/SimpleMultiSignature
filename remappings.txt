@@ -2,3 +2,4 @@ hardhat/=node_modules/hardhat/
 @openzeppelin/contracts/=node_modules/@openzeppelin/contracts
 @openzeppelin/contracts-upgradeable/=node_modules/@openzeppelin/contracts-upgradeable
 foundry-test-utility/contracts/=node_modules/foundry-test-utility/contracts
+simple-nfterc721/contracts/=node_modules/simple-nfterc721/contracts
