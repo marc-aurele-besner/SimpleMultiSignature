@@ -264,9 +264,9 @@ contract SimpleMultiSignature_test is Helper {
 
     bytes memory data = buildData_multipleRequests(tos, values, datas, txnGas, false);
 
-    // generateSignatures_and_execTransaction(owner1, ownersPk, address(multiSignature), 0, data, 70000, 0, Errors.RevertStatus.Success, true);
+    generateSignatures_and_execTransaction(owner1, ownersPk, address(multiSignature), 0, data, 70000, 0, Errors.RevertStatus.Success, true);
 
-    // assertTrue(multiSignature.isOwner(notOwner1));
-    // assertTrue(multiSignature.isOwner(notOwner2));
+    assertTrue(multiSignature.isOwner(notOwner1));
+    assertTrue(multiSignature.isOwner(notOwner2));
   }
 }
