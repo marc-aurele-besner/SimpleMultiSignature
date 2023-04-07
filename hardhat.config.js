@@ -4,7 +4,17 @@ require('hardhat-awesome-cli');
 require('transaction-retry-tool');
 require('@openzeppelin/hardhat-upgrades');
 
-const { RPC_MAINNET, RPC_GOERLI, PRIVATE_KEY_MAINNET, PRIVATE_KEY_GOERLI, ETHERSCAN_API_KEY, POLYSCAN_API_KEY, BLOCKSCOUT_API_KEY } = process.env;
+const {
+  RPC_MAINNET,
+  RPC_GOERLI,
+  RPC_SEPOLIA,
+  PRIVATE_KEY_MAINNET,
+  PRIVATE_KEY_GOERLI,
+  PRIVATE_KEY_SEPOLIA,
+  ETHERSCAN_API_KEY,
+  POLYSCAN_API_KEY,
+  BLOCKSCOUT_API_KEY
+} = process.env;
 let { DUMMY_PRIVATE_KEY } = process.env;
 
 // if (!DUMMY_PRIVATE_KEY) throw new Error('Please set your DUMMY_PRIVATE_KEY in a .env.development file');
@@ -27,6 +37,13 @@ module.exports = {
       gas: 15000000,
       gasPrice: 5000000000,
       accounts: [`${PRIVATE_KEY_GOERLI || DUMMY_PRIVATE_KEY}`]
+    },
+    sepolia: {
+      url: `${RPC_SEPOLIA}`,
+      chainId: 11155111,
+      gas: 15000000,
+      gasPrice: 5000000000,
+      accounts: [`${PRIVATE_KEY_SEPOLIA || DUMMY_PRIVATE_KEY}`]
     },
     mumbai: {
       url: `${RPC_GOERLI}`,

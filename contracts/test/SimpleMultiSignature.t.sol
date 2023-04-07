@@ -630,157 +630,162 @@ contract SimpleMultiSignature_test is Helper {
     assertEq(simpleNft.balanceOf(address(simpleNftMarketplace)), 1);
   }
 
-  // function test_multipleRequests_with_SimpleNft_MockERC20_SimpleNftMarketplace_createListing_and_buyListing() public {
-  //   string memory nftName = 'Nft';
-  //   string memory nftSymbol = 'NFT';
+  function test_multipleRequests_with_SimpleNft_MockERC20_SimpleNftMarketplace_createListing_and_buyListing() public {
+    string memory nftName = 'Nft';
+    string memory nftSymbol = 'NFT';
 
-  //   SimpleNft simpleNft = new SimpleNft(nftName, nftSymbol, 1000);
-  //   MockERC20 mockERC20 = new MockERC20();
-  //   SimpleNftMarketplace simpleNftMarketplace = new SimpleNftMarketplace();
+    SimpleNft simpleNft = new SimpleNft(nftName, nftSymbol, 1000);
+    MockERC20 mockERC20 = new MockERC20();
+    SimpleNftMarketplace simpleNftMarketplace = new SimpleNftMarketplace();
 
-  //   simpleNft.startMinting(block.timestamp + 100, block.timestamp + 1);
+    simpleNft.startMinting(block.timestamp + 100, block.timestamp + 1);
 
-  //   help_moveBlockAndTimeFoward(150, 150);
+    help_moveBlockAndTimeFoward(150, 150);
 
-  //   address[] memory owners = new address[](3);
-  //   uint256[] memory ownersPk = new uint256[](3);
-  //   owners[0] = owner1;
-  //   owners[1] = owner2;
-  //   owners[2] = owner3;
-  //   createMultiSig(owner1, owners, 2);
-  //   ownersPk[0] = 1;
-  //   ownersPk[1] = 2;
-  //   ownersPk[2] = 3;
+    address[] memory owners = new address[](3);
+    uint256[] memory ownersPk = new uint256[](3);
+    owners[0] = owner1;
+    owners[1] = owner2;
+    owners[2] = owner3;
+    createMultiSig(owner1, owners, 2);
+    ownersPk[0] = 1;
+    ownersPk[1] = 2;
+    ownersPk[2] = 3;
+    {
+      address[] memory tos = new address[](15);
+      uint256[] memory values = new uint256[](15);
+      bytes[] memory datas = new bytes[](15);
+      uint256[] memory txnGas = new uint256[](15);
 
-  //   address[] memory tos = new address[](15);
-  //   uint256[] memory values = new uint256[](15);
-  //   bytes[] memory datas = new bytes[](15);
-  //   uint256[] memory txnGas = new uint256[](15);
+      uint256 totalGas;
 
-  //   uint256 totalGas;
+      tos[0] = address(simpleNft);
+      tos[1] = address(simpleNft);
 
-  //   tos[0] = address(simpleNft);
-  //   tos[1] = address(simpleNft);
+      tos[2] = address(mockERC20);
+      tos[3] = address(mockERC20);
+      tos[4] = address(mockERC20);
+      tos[5] = address(mockERC20);
 
-  //   tos[2] = address(mockERC20);
-  //   tos[3] = address(mockERC20);
-  //   tos[4] = address(mockERC20);
-  //   tos[5] = address(mockERC20);
+      tos[6] = address(simpleNftMarketplace);
+      tos[7] = address(simpleNftMarketplace);
+      tos[8] = address(simpleNftMarketplace);
+      tos[9] = address(simpleNftMarketplace);
+      tos[10] = address(simpleNftMarketplace);
+      tos[11] = address(simpleNftMarketplace);
+      tos[12] = address(simpleNftMarketplace);
+      tos[13] = address(simpleNft);
+      tos[14] = address(simpleNftMarketplace);
 
-  //   tos[6] = address(simpleNftMarketplace);
-  //   tos[7] = address(simpleNftMarketplace);
-  //   tos[8] = address(simpleNftMarketplace);
-  //   tos[9] = address(simpleNftMarketplace);
-  //   tos[10] = address(simpleNftMarketplace);
-  //   tos[11] = address(simpleNftMarketplace);
-  //   tos[12] = address(simpleNftMarketplace);
-  //   tos[13] = address(simpleNft);
-  //   tos[14] = address(simpleNftMarketplace);
+      values[0] = 1 ether;
+      values[1] = 0;
+      values[2] = 0;
+      values[3] = 0;
+      values[4] = 0;
+      values[5] = 0;
+      values[6] = 0;
+      values[7] = 0;
+      values[8] = 0;
+      values[9] = 0;
+      values[10] = 0;
+      values[11] = 0;
+      values[12] = 0;
+      values[13] = 0;
+      values[14] = 0;
 
-  //   values[0] = 1 ether;
-  //   values[1] = 0;
-  //   values[2] = 0;
-  //   values[3] = 0;
-  //   values[4] = 0;
-  //   values[5] = 0;
-  //   values[6] = 0;
-  //   values[7] = 0;
-  //   values[8] = 0;
-  //   values[9] = 0;
-  //   values[10] = 0;
-  //   values[11] = 0;
-  //   values[12] = 0;
-  //   values[13] = 0;
-  //   values[14] = 0;
+      datas[0] = abi.encodeWithSignature('mint(uint8)', 2);
+      datas[1] = abi.encodeWithSignature('transferFrom(address,address,uint256)', address(multiSignature), owner1, 1);
+      datas[2] = abi.encodeWithSignature('mint(address,uint256)', address(multiSignature), 100 ether);
+      datas[3] = abi.encodeWithSignature('mint(address,uint256)', owner1, 50 ether);
+      datas[4] = abi.encodeWithSignature('mint(address,uint256)', owner2, 50 ether);
+      datas[5] = abi.encodeWithSignature('mint(address,uint256)', owner3, 50 ether);
 
-  //   datas[0] = abi.encodeWithSignature('mint(uint8)', 2);
-  //   datas[1] = abi.encodeWithSignature('transferFrom(address,address,uint256)', address(multiSignature), owner1, 1);
-  //   datas[2] = abi.encodeWithSignature('mint(address,uint256)', address(multiSignature), 100 ether);
-  //   datas[3] = abi.encodeWithSignature('mint(address,uint256)', owner1, 50 ether);
-  //   datas[4] = abi.encodeWithSignature('mint(address,uint256)', owner2, 50 ether);
-  //   datas[5] = abi.encodeWithSignature('mint(address,uint256)', owner3, 50 ether);
+      datas[6] = abi.encodeWithSignature('initialize(address)', address(multiSignature));
+      datas[7] = abi.encodeWithSignature('changeToken(address)', address(mockERC20));
+      datas[8] = abi.encodeWithSignature('changeSupportedContract(address,bool)', address(simpleNft), true);
+      datas[9] = abi.encodeWithSignature('giveModeratorAccess(address)', address(multiSignature));
+      datas[10] = abi.encodeWithSignature('giveModeratorAccess(address)', address(owner1));
+      datas[11] = abi.encodeWithSignature('giveModeratorAccess(address)', address(owner2));
+      datas[12] = abi.encodeWithSignature('giveModeratorAccess(address)', address(owner3));
+      datas[13] = abi.encodeWithSignature('approve(address,uint256)', address(simpleNftMarketplace), 0);
+      datas[14] = abi.encodeWithSignature('createListing(address,uint256,uint256)', address(simpleNft), 0, 30 ether);
 
-  //   datas[6] = abi.encodeWithSignature('initialize(address)', address(multiSignature));
-  //   datas[7] = abi.encodeWithSignature('changeToken(address)', address(mockERC20));
-  //   datas[8] = abi.encodeWithSignature('changeSupportedContract(address,bool)', address(simpleNft), true);
-  //   datas[9] = abi.encodeWithSignature('giveModeratorAccess(address)', address(multiSignature));
-  //   datas[10] = abi.encodeWithSignature('giveModeratorAccess(address)', address(owner1));
-  //   datas[11] = abi.encodeWithSignature('giveModeratorAccess(address)', address(owner2));
-  //   datas[12] = abi.encodeWithSignature('giveModeratorAccess(address)', address(owner3));
-  //   datas[13] = abi.encodeWithSignature('approve(address,uint256)', address(simpleNftMarketplace), 0);
-  //   datas[14] = abi.encodeWithSignature('createListing(address,uint256,uint256)', address(simpleNft), 0, 30 ether);
+      txnGas[0] = 125000;
+      txnGas[1] = 50000;
+      txnGas[2] = 50000;
+      txnGas[3] = 50000;
+      txnGas[4] = 50000;
+      txnGas[5] = 50000;
+      txnGas[6] = 150000;
+      txnGas[7] = 50000;
+      txnGas[8] = 50000;
+      txnGas[9] = 50000;
+      txnGas[10] = 50000;
+      txnGas[11] = 50000;
+      txnGas[12] = 50000;
+      txnGas[13] = 50000;
+      txnGas[14] = 250000;
 
-  //   txnGas[0] = 125000;
-  //   txnGas[1] = 50000;
-  //   txnGas[2] = 50000;
-  //   txnGas[3] = 50000;
-  //   txnGas[4] = 50000;
-  //   txnGas[5] = 50000;
-  //   txnGas[6] = 150000;
-  //   txnGas[7] = 50000;
-  //   txnGas[8] = 50000;
-  //   txnGas[9] = 50000;
-  //   txnGas[10] = 50000;
-  //   txnGas[11] = 50000;
-  //   txnGas[12] = 50000;
-  //   txnGas[13] = 50000;
-  //   txnGas[14] = 250000;
+      for (uint256 i; i < txnGas.length; i++) {
+        totalGas += txnGas[i];
+      }
 
-  //   for (uint256 i; i < txnGas.length; i++) {
-  //     totalGas += txnGas[i];
-  //   }
+      vm.deal(address(multiSignature), 1 ether);
 
-  //   vm.deal(address(multiSignature), 1 ether);
+      bytes memory data = buildData_multipleRequests(tos, values, datas, txnGas, false);
 
-  //   bytes memory data = buildData_multipleRequests(tos, values, datas, txnGas, false);
+      generateSignatures_and_execTransaction(owner1, ownersPk, address(multiSignature), 0, data, totalGas, 0, Errors.RevertStatus.Success, true);
 
-  //   generateSignatures_and_execTransaction(owner1, ownersPk, address(multiSignature), 0, data, totalGas, 0, Errors.RevertStatus.Success, true);
+      assertEq(simpleNft.balanceOf(owner1), 1);
 
-  //   assertEq(simpleNft.balanceOf(owner1), 1);
+      assertEq(mockERC20.balanceOf(address(multiSignature)), 100 ether);
+      assertEq(mockERC20.balanceOf(owner1), 50 ether);
+      assertEq(mockERC20.balanceOf(owner2), 50 ether);
+      assertEq(mockERC20.balanceOf(owner3), 50 ether);
 
-  //   assertEq(mockERC20.balanceOf(address(multiSignature)), 100 ether);
-  //   assertEq(mockERC20.balanceOf(owner1), 50 ether);
-  //   assertEq(mockERC20.balanceOf(owner2), 50 ether);
-  //   assertEq(mockERC20.balanceOf(owner3), 50 ether);
+      assertTrue(simpleNftMarketplace.isAdmin(address(multiSignature)));
+      assertTrue(simpleNftMarketplace.isTreasury(address(multiSignature)));
+      assertTrue(simpleNftMarketplace.isModerator(address(multiSignature)));
+      assertTrue(simpleNftMarketplace.isModerator(address(owner1)));
+      assertTrue(simpleNftMarketplace.isModerator(address(owner2)));
+      assertTrue(simpleNftMarketplace.isModerator(address(owner3)));
 
-  //   assertTrue(simpleNftMarketplace.isAdmin(address(multiSignature)));
-  //   assertTrue(simpleNftMarketplace.isTreasury(address(multiSignature)));
-  //   assertTrue(simpleNftMarketplace.isModerator(address(multiSignature)));
-  //   assertTrue(simpleNftMarketplace.isModerator(address(owner1)));
-  //   assertTrue(simpleNftMarketplace.isModerator(address(owner2)));
-  //   assertTrue(simpleNftMarketplace.isModerator(address(owner3)));
+      assertEq(simpleNft.balanceOf(address(simpleNftMarketplace)), 1);
+    }
 
-  //   assertEq(simpleNft.balanceOf(address(simpleNftMarketplace)), 1);
+    vm.startPrank(owner1);
+    simpleNft.approve(address(simpleNftMarketplace), 1);
+    simpleNftMarketplace.createListing(address(simpleNft), 1, 25 ether);
 
-  //   vm.startPrank(owner1);
-  //   simpleNft.approve(address(simpleNftMarketplace), 1);
-  //   simpleNftMarketplace.createListing(address(simpleNft), 1, 25 ether);
+    mockERC20.approve(address(simpleNftMarketplace), 30 ether);
+    simpleNftMarketplace.buyListing(0);
+    vm.stopPrank();
 
-  //   mockERC20.approve(address(simpleNftMarketplace), 30 ether);
-  //   simpleNftMarketplace.buyListing(0);
-  //   vm.stopPrank();
+    assertEq(simpleNft.balanceOf(address(simpleNftMarketplace)), 1);
 
-  //   assertEq(simpleNft.balanceOf(address(simpleNftMarketplace)), 1);
+    {
+      address[] memory tos_2 = new address[](2);
+      uint256[] memory values_2 = new uint256[](2);
+      bytes[] memory datas_2 = new bytes[](2);
+      uint256[] memory txnGas_2 = new uint256[](2);
 
-  //   address[] memory tos_2 = new address[](2);
-  //   uint256[] memory values_2 = new uint256[](2);
-  //   bytes[] memory datas_2 = new bytes[](2);
-  //   uint256[] memory txnGas_2 = new uint256[](2);
+      tos_2[0] = address(mockERC20);
+      tos_2[1] = address(simpleNftMarketplace);
 
-  //   tos_2[0] = address(mockERC20);
-  //   tos_2[1] = address(simpleNftMarketplace);
+      values_2[0] = 0;
+      values_2[1] = 0;
 
-  //   values_2[0] = 0;
-  //   values_2[1] = 0;
+      datas_2[0] = abi.encodeWithSignature('approve(address,uint256)', address(simpleNftMarketplace), 25 ether);
+      datas_2[1] = abi.encodeWithSignature('buyListing(uint256)', 1);
 
-  //   datas_2[0] = abi.encodeWithSignature('approve(address,uint256)', address(simpleNftMarketplace), 25 ether);
-  //   datas_2[1] = abi.encodeWithSignature('buyListing(uint256)', 1);
+      txnGas_2[0] = 50000;
+      txnGas_2[1] = 250000;
 
-  //   txnGas_2[0] = 50000;
-  //   txnGas_2[1] = 250000;
+      bytes memory data2 = buildData_multipleRequests(tos_2, values_2, datas_2, txnGas_2, false);
 
-  //   bytes memory data2 = buildData_multipleRequests(tos_2, values_2, datas_2, txnGas_2, false);
+      generateSignatures_and_execTransaction(owner1, ownersPk, address(multiSignature), 0, data2, 300000, 1, Errors.RevertStatus.Success, true);
 
-  //   generateSignatures_and_execTransaction(owner1, ownersPk, address(multiSignature), 0, data2, 300000, 1, Errors.RevertStatus.Success, true);
-  // }
+      assertEq(simpleNft.balanceOf(address(multiSignature)), 1);
+    }
+  }
 }
