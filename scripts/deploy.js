@@ -3,7 +3,7 @@ const { ethers, network, addressBook } = require('hardhat');
 async function deployContract() {
   const [deployer] = await ethers.getSigners();
 
-  const THRESHOLD = 3;
+  const THRESHOLD = 1;
 
   const OWNER1 = process.env.OWNER1;
   const OWNER2 = process.env.OWNER2;
