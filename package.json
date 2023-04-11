@@ -16,8 +16,14 @@
     "prettier-foundry-contracts": "prettier --write contracts/test/",
     "deploy-test": "npx hardhat run scripts/deploy.js",
     "deploy-localhost": "npx hardhat run scripts/deploy.js --network localhost",
+    "deploy-sepolia": "npx hardhat run scripts/deploy.js --network sepolia",
     "deploy-goerli": "npx hardhat run scripts/deploy.js --network goerli",
-    "deploy-mainnet": "npx hardhat run scripts/deploy.js --network mainnet"
+    "deploy-mainnet": "npx hardhat run scripts/deploy.js --network mainnet",
+    "prepare-request": "npx hardhat run scripts/prepareRequest.js",
+    "sign": "npx hardhat run scripts/signRequest.js",
+    "execute": "npx hardhat run scripts/executeTransaction.js",
+    "execute-localhost": "npx hardhat run scripts/executeTransaction.js --network localhost",
+    "execute-sepolia": "npx hardhat run scripts/executeTransaction.js --network sepolia"
   },
   "repository": {
     "type": "git",
@@ -36,12 +42,13 @@
     "@openzeppelin/hardhat-upgrades": "^1.22.1",
     "foundry-test-utility": "^0.1.0",
     "hardhat": "^2.12.7",
-    "hardhat-awesome-cli": "^0.1.1",
+    "hardhat-awesome-cli": "^0.1.4",
     "prettier": "^2.8.4",
     "prettier-plugin-solidity": "^1.1.2"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "fs": "^0.0.1-security",
     "simple-nfterc721": "^0.1.1",
     "simplenft-marketplace": "^1.0.1",
     "transaction-retry-tool": "^0.1.1"

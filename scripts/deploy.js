@@ -1,31 +1,50 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
-const hre = require("hardhat");
+const { ethers, network, addressBook } = require('hardhat');
 
-async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+async function deployContract() {
+  const [deployer] = await ethers.getSigners();
 
-  const lockedAmount = hre.ethers.utils.parseEther("0.001");
+  const THRESHOLD = 1;
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  const OWNER1 = process.env.OWNER1;
+  const OWNER2 = process.env.OWNER2;
+  const OWNER3 = process.env.OWNER3;
+  const OWNER4 = process.env.OWNER4;
+  const OWNER5 = process.env.OWNER5;
 
-  await lock.deployed();
+  if (!OWNER1 || !OWNER2 || !OWNER3 || !OWNER4 || !OWNER5) {
+    throw new Error('Please set OWNER1, OWNER2, OWNER3, OWNER4, OWNER5 in .env file');
+  }
 
-  console.log(
-    `Lock with ${ethers.utils.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
+  const SimpleMultiSignature = await ethers.getContractFactory('SimpleMultiSignature');
+  const simpleMultiSignature = await SimpleMultiSignature.connect(deployer).deploy([OWNER1, OWNER2, OWNER3, OWNER4, OWNER5], THRESHOLD);
+
+  await simpleMultiSignature.deployed();
+
+  await addressBook.saveContract(
+    'SimpleMultiSignature',
+    simpleMultiSignature.address,
+    network.name,
+    deployer.address,
+    network.config.chainId,
+    simpleMultiSignature.deployTransaction.blockHash,
+    simpleMultiSignature.deployTransaction.blockNumber,
+    'Simple Multi Signature',
+    {
+      owners: [OWNER1, OWNER2, OWNER3, OWNER4, OWNER5],
+      threshold: THRESHOLD
+    },
+    false
   );
+
+  return { simpleMultiSignature };
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
+async function main() {
+  const { simpleMultiSignature } = await deployContract();
+
+  console.log(`Contract deployed at ${simpleMultiSignature.address}`);
+}
+
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;

@@ -2,8 +2,9 @@
 pragma solidity ^0.8.19;
 
 import '@openzeppelin/contracts/utils/cryptography/EIP712.sol';
+import '@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol';
 
-contract SimpleMultiSignature is EIP712 {
+contract SimpleMultiSignature is EIP712, IERC721ReceiverUpgradeable {
   uint16 private _threshold;
   uint16 private _ownerCount;
 
@@ -267,6 +268,10 @@ contract SimpleMultiSignature is EIP712 {
 
   function isPaused() external view returns (bool) {
     return _paused;
+  }
+
+  function onERC721Received(address, address, uint256, bytes memory) public virtual override returns (bytes4) {
+    return this.onERC721Received.selector;
   }
 
   receive() external payable {}
