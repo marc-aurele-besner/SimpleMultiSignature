@@ -21,6 +21,7 @@
     "deploy-mainnet": "npx hardhat run scripts/deploy.js --network mainnet",
     "prepare-request": "npx hardhat run scripts/prepareRequest.js",
     "sign": "npx hardhat run scripts/signRequest.js",
+    "sign-sepolia": "npx hardhat run scripts/signRequest.js --network sepolia",
     "execute": "npx hardhat run scripts/executeTransaction.js",
     "execute-localhost": "npx hardhat run scripts/executeTransaction.js --network localhost",
     "execute-sepolia": "npx hardhat run scripts/executeTransaction.js --network sepolia"
