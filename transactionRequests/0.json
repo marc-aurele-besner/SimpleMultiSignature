@@ -1,4 +1,6 @@
 {
+  "network": "sepolia",
+  "chainId": 11155111,
   "multiSignature": "0x10C3e6FbdFBb43459B13B6957f77097EE5aC7931",
   "targetAddress": "0x10C3e6FbdFBb43459B13B6957f77097EE5aC7931",
   "transactionValue": "0",

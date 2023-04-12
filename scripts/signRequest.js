@@ -8,7 +8,7 @@ async function main() {
   const REQUESTS_FOLDER_PATH = './transactionRequests';
   // Take a transaction request object and sign it with the current private key in .env and return a signature
 
-  const NONCE_OF_REQUEST_TO_SIGN = 1; // Change this to the request nonce (requestId)
+  const NONCE_OF_REQUEST_TO_SIGN = 8; // Change this to the request nonce (requestId)
 
   if (fs.existsSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json')) {
     const requestDetails = await fs.readFileSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json', 'utf8');
@@ -32,6 +32,8 @@ async function main() {
       else signaturesConcatenatedWithNewSignature += String(signature).substring(2);
 
       const requestWithSignatures = {
+        network: network.name, // Network name
+        chainId: network.config.chainId, // Chain ID
         ...requestDetailsFormatted,
         ownersSigners: [...requestDetailsFormatted.ownersSigners, signer.address],
         signatures: [...requestDetailsFormatted.signatures, signature],
@@ -39,7 +41,7 @@ async function main() {
       };
       console.log('requestWithSignatures', requestWithSignatures);
 
-      await fs.writeFileSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json', JSON.stringify(requestWithSignatures));
+      await fs.writeFileSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json', JSON.stringify(requestWithSignatures, null, 2));
 
       console.log('\x1b[32m', 'Multisig request with signature saved in ' + REQUESTS_FOLDER_PATH + ', please commit to GitHub this request', '\x1b[0m');
     }

@@ -34,14 +34,12 @@ async function main() {
   ]);
 
   const NEW_REQUEST = {
-    network: network.name, // Network name
-    chainId: network.config.chainId, // Chain ID
     multiSignature: MULTISIG_ADDRESS, // Multi signature address
     targetAddress: MULTISIG_ADDRESS, // to, target contract or receiver
     transactionValue: '0', // ethereum to be sent (if any)
     transactionData: data, // Data (empty if sending ethereum)
     txnGas: 900000, // Total gas to be use by the request
-    txNonce: 1, // Nonce to use (need to be unique)
+    txNonce: 8, // Nonce to use (need to be unique)
     ownersSigners: [], // List of owners that signed the request
     signatures: [], // List of signatures
     signaturesConcatenated: '' // Signature concatenated (to be use to execute transaction)
@@ -51,7 +49,7 @@ async function main() {
   if (fs.existsSync(REQUESTS_FOLDER_PATH + '/' + NEW_REQUEST.txNonce + '.json'))
     console.log('\x1b[33m', 'Request with same nonce already exist in ' + REQUESTS_FOLDER_PATH + ', please change the txNonce', '\x1b[0m');
   else {
-    await fs.writeFileSync(REQUESTS_FOLDER_PATH + '/' + NEW_REQUEST.txNonce + '.json', JSON.stringify(NEW_REQUEST));
+    await fs.writeFileSync(REQUESTS_FOLDER_PATH + '/' + NEW_REQUEST.txNonce + '.json', JSON.stringify(NEW_REQUEST, null, 2));
     console.log('\x1b[32m', 'Multisig request saved in ' + REQUESTS_FOLDER_PATH + ', please commit to GitHub this request', '\x1b[0m');
   }
 }
