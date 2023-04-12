@@ -9,11 +9,13 @@ async function main() {
 
   // Take the transaction request object and the signatures and execute the transaction onchain
 
-  const NONCE_OF_REQUEST_TO_SIGN = 0; // Change this to the request nonce (requestId)
+  const NONCE_OF_REQUEST_TO_SIGN = 1; // Change this to the request nonce (requestId)
 
   if (fs.existsSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json')) {
     const requestDetails = await fs.readFileSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json', 'utf8');
     const requestDetailsFormatted = JSON.parse(requestDetails);
+
+    if (requestDetailsFormatted.txHash !== undefined) console.log('\x1b[33m', 'This request has already been executed', '\x1b[0m');
 
     const SimpleMultiSignature = await ethers.getContractFactory('SimpleMultiSignature');
     const simpleMultiSignature = new ethers.Contract(requestDetailsFormatted.multiSignature, SimpleMultiSignature.interface, sender);
@@ -44,6 +46,11 @@ async function main() {
           } else {
             console.log('\x1b[34m', 'The request (or part of it) failed', '\x1b[0m');
           }
+          const requestWithTxHash = {
+            ...requestDetailsFormatted,
+            txHash: tx.hash
+          };
+          await fs.writeFileSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json', JSON.stringify(requestWithTxHash, null, 2));
         } else {
           console.log('\x1b[34m', 'The transaction failed', '\x1b[0m');
         }

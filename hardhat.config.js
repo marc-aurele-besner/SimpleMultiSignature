@@ -41,8 +41,6 @@ module.exports = {
     sepolia: {
       url: `${RPC_SEPOLIA}`,
       chainId: 11155111,
-      gas: 15000000,
-      gasPrice: 5000000000,
       accounts: [`${PRIVATE_KEY_SEPOLIA || DUMMY_PRIVATE_KEY}`]
     },
     mumbai: {
@@ -63,8 +61,8 @@ module.exports = {
   etherscan: {
     apiKey: {
       mainnet: `${ETHERSCAN_API_KEY}`,
+      sepolia: `${ETHERSCAN_API_KEY}`,
       goerli: `${ETHERSCAN_API_KEY}`,
-      mumbai: `${POLYSCAN_API_KEY}`,
       zhejiang: `${BLOCKSCOUT_API_KEY}`
     },
     customChains: [
