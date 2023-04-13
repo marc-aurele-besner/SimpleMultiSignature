@@ -8,7 +8,7 @@ async function main() {
   const REQUESTS_FOLDER_PATH = './transactionRequests';
   // Take a transaction request object and sign it with the current private key in .env and return a signature
 
-  const NONCE_OF_REQUEST_TO_SIGN = 1; // Change this to the request nonce (requestId)
+  const NONCE_OF_REQUEST_TO_SIGN = 109; // Change this to the request nonce (requestId)
 
   if (fs.existsSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json')) {
     const requestDetails = await fs.readFileSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json', 'utf8');
