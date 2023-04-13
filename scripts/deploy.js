@@ -3,20 +3,21 @@ const { ethers, network, addressBook } = require('hardhat');
 async function deployContract() {
   const [deployer] = await ethers.getSigners();
 
-  const THRESHOLD = 1;
+  const THRESHOLD = 2;
 
   const OWNER1 = process.env.OWNER1;
   const OWNER2 = process.env.OWNER2;
   const OWNER3 = process.env.OWNER3;
   const OWNER4 = process.env.OWNER4;
   const OWNER5 = process.env.OWNER5;
+  const OWNER6 = process.env.OWNER6;
 
-  if (!OWNER1 || !OWNER2 || !OWNER3 || !OWNER4 || !OWNER5) {
-    throw new Error('Please set OWNER1, OWNER2, OWNER3, OWNER4, OWNER5 in .env file');
+  if (!OWNER1 || !OWNER2 || !OWNER3 || !OWNER4 || !OWNER5 || !OWNER6) {
+    throw new Error('Please set OWNER1, OWNER2, OWNER3, OWNER4, OWNER5, OWNER6 in .env file');
   }
 
   const SimpleMultiSignature = await ethers.getContractFactory('SimpleMultiSignature');
-  const simpleMultiSignature = await SimpleMultiSignature.connect(deployer).deploy([OWNER1, OWNER2, OWNER3, OWNER4, OWNER5], THRESHOLD);
+  const simpleMultiSignature = await SimpleMultiSignature.connect(deployer).deploy([OWNER1, OWNER2, OWNER3, OWNER4, OWNER5, OWNER6], THRESHOLD);
 
   await simpleMultiSignature.deployed();
 

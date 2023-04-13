@@ -3,7 +3,8 @@ const fs = require('fs');
 
 async function main() {
   const REQUESTS_FOLDER_PATH = './transactionRequests';
-  let MULTISIG_ADDRESS = '0x10C3e6FbdFBb43459B13B6957f77097EE5aC7931';
+  // const MULTISIG_ADDRESS = '0x10C3e6FbdFBb43459B13B6957f77097EE5aC7931'; // (1st contract with 3 threshold)
+  const MULTISIG_ADDRESS = '0x8FcB9b721a19111B9486D57B4fb3131218c1e784'; // (2nd contract with 2 threshold)
 
   const OWNER1 = process.env.OWNER1;
   const OWNER2 = process.env.OWNER2;
@@ -15,6 +16,7 @@ async function main() {
 
   const MockERC20 = await ethers.getContractFactory('MockERC20');
   const MockERC20_ADDRESS = '0xF80c6aa0E21D32D89BaF72F39a0128A7527FB0C5';
+
   const SimpleMultiSignature = await ethers.getContractFactory('SimpleMultiSignature');
 
   // const newOwnerAddress = ethers.constants.AddressZero;
@@ -39,7 +41,7 @@ async function main() {
     transactionValue: '0', // ethereum to be sent (if any)
     transactionData: data, // Data (empty if sending ethereum)
     txnGas: 900000, // Total gas to be use by the request
-    txNonce: 8, // Nonce to use (need to be unique)
+    txNonce: 109, // Nonce to use (need to be unique)
     ownersSigners: [], // List of owners that signed the request
     signatures: [], // List of signatures
     signaturesConcatenated: '' // Signature concatenated (to be use to execute transaction)
