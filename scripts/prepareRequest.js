@@ -41,7 +41,7 @@ async function main() {
     transactionValue: '0', // ethereum to be sent (if any)
     transactionData: data, // Data (empty if sending ethereum)
     txnGas: 900000, // Total gas to be use by the request
-    txNonce: 109, // Nonce to use (need to be unique)
+    txNonce: 110, // Nonce to use (need to be unique)
     ownersSigners: [], // List of owners that signed the request
     signatures: [], // List of signatures
     signaturesConcatenated: '' // Signature concatenated (to be use to execute transaction)

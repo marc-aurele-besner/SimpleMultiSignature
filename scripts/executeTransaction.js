@@ -9,7 +9,7 @@ async function main() {
 
   // Take the transaction request object and the signatures and execute the transaction onchain
 
-  const NONCE_OF_REQUEST_TO_SIGN = 100; // Change this to the request nonce (requestId)
+  const NONCE_OF_REQUEST_TO_SIGN = 101; // Change this to the request nonce (requestId)
 
   if (fs.existsSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json')) {
     const requestDetails = await fs.readFileSync(REQUESTS_FOLDER_PATH + '/' + NONCE_OF_REQUEST_TO_SIGN + '.json', 'utf8');
